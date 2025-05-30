@@ -9,6 +9,11 @@ namespace ClassLibraryGameDND
 {
     public class MySqlDB
     {
+        public static MySqlConnection Create()
+        {
+            return Instance.GetConnecttion();
+        }
+
         MySqlConnection mySqlConnection;
         private static MySqlDB instance;
         public static MySqlDB Instance => instance ??= new MySqlDB();
