@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibraryGameDND", "ClassLibraryGameDND\ClassLibraryGameDND.csproj", "{445FAE84-6880-41A5-8C53-C6BB575F81BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{F1577FC5-CF4B-4088-8651-57C9EF064772}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{445FAE84-6880-41A5-8C53-C6BB575F81BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445FAE84-6880-41A5-8C53-C6BB575F81BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445FAE84-6880-41A5-8C53-C6BB575F81BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445FAE84-6880-41A5-8C53-C6BB575F81BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1577FC5-CF4B-4088-8651-57C9EF064772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1577FC5-CF4B-4088-8651-57C9EF064772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1577FC5-CF4B-4088-8651-57C9EF064772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1577FC5-CF4B-4088-8651-57C9EF064772}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2C7020B-48B9-45D8-9674-B350238ECFBF}
+	EndGlobalSection
+EndGlobal
