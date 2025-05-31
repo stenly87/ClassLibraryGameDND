@@ -9,28 +9,16 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class EventExpeditionCrossController : ControllerBase
     {
-        [HttpGet("GetAllExpeditions")]
-        public List<Expedition> GetAllExpeditions()
+        [HttpPost("AddEventExpeditionCross")]
+        public void AddEventExpeditionCross(EventExpeditionCross ex, int eventId, int expId, int logId)
         {
-            return DataBaseContext.GetAllExpeditions();
+            DataBaseContext.AddEventExpeditionCross(ex, eventId, expId, logId);
         }
 
-        [HttpPost("AddExpedition")]
-        public void AddExpedition(Expedition ex)
+        [HttpPost("DeleteExpedition/{expId}")]
+        public void DeleteEventExpeditionCross(int expId)
         {
-            DataBaseContext.AddExpedition(ex);
-        }
-
-        [HttpPost("EditExpedition")]
-        public void EditExpedition(Expedition ex)
-        {
-            DataBaseContext.EditExpedition(ex);
-        }
-
-        [HttpPost("DeleteExpedition")]
-        public void DeleteExpedition(Expedition ex)
-        {
-            DataBaseContext.DeleteExpedition(ex);
+            DataBaseContext.DeleteEventExpeditionCross(expId);
         }
     }
 }

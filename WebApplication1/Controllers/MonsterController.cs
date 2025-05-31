@@ -21,16 +21,16 @@ namespace WebApplication1.Controllers
             DataBaseContext.AddMonster(mon);
         }
 
-        [HttpPost("EditExpedition")]
+        [HttpPost("EditMonster")]
         public void EditMonster(Monster mon)
         {
             DataBaseContext.EditMonster(mon);
         }
 
-        [HttpPost("DeleteExpedition")]
-        public void DeleteMonster(Monster mon)
+        [HttpPost("DeleteMonster/{monId}")]
+        public void DeleteMonster(int monId)
         {
-            DataBaseContext.DeleteMonster(mon);
+            DataBaseContext.DeleteMonster(monId);
         }
     }
 }

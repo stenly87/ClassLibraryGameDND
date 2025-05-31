@@ -19,6 +19,11 @@ namespace ClassLibraryGameDND.Models.OtherModels
             throw new NotImplementedException();
         }
 
+        public static void AddEventExpeditionCross(EventExpeditionCross ex, int eventId, int expId, int logId)
+        {
+            throw new NotImplementedException();
+        }
+
         public static void AddExpedition(Expedition ex)
         {
             throw new NotImplementedException();
@@ -34,32 +39,32 @@ namespace ClassLibraryGameDND.Models.OtherModels
             throw new NotImplementedException();
         }
 
-        public static void DeleteEvent(Event ev)
+        public static void DeleteEvent(int eventId)
         {
             throw new NotImplementedException();
         }
 
-        public static void DeleteExpedition(Expedition ex)
+        public static void DeleteEventExpeditionCross(int expId)
         {
             throw new NotImplementedException();
         }
 
-        public static void DeleteLog(Log log)
+        public static void DeleteExpedition(int expId)
         {
             throw new NotImplementedException();
         }
 
-        public static void DeleteMonster(Monster mon)
+        public static void DeleteLog(int logId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void DeleteMonster(int monId)
         {
             throw new NotImplementedException();
         }
 
         public static void EditEvent(Event ev)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void EditExpedition(Expedition ex)
         {
             throw new NotImplementedException();
         }
@@ -78,7 +83,6 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             throw new NotImplementedException();
         }
-
 
         public static List<Expedition> GetAllExpeditionsByIdCharacter(int id)
         {

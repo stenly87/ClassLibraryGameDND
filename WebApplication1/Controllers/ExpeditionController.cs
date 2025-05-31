@@ -22,10 +22,10 @@ namespace WebApplication1.Controllers
         }
 
 
-        [HttpPost("DeleteExpedition")]
-        public void DeleteExpedition(Expedition ex)
+        [HttpPost("DeleteExpedition/{expId}")]
+        public void DeleteExpedition(int expId)
         {
-            DataBaseContext.DeleteExpedition(ex);
+            DataBaseContext.DeleteExpedition(expId);
         }
     }
 }
