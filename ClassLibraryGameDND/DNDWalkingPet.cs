@@ -27,5 +27,51 @@ namespace ClassLibraryGameDND
             foreach (Event e in events)
                 sb.Append($"{e.EventName}\n");
         }
+
+        public string StartFight(Pet pet, Monster monster)
+        {
+            var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
+            var result = D20();
+            bool autofail = result == 1;
+            result = pet.BAB + pet.DamageBonus + statBonus + result;
+
+            if (!autofail && (result == 20 || result >= monster.AC))
+            {
+                int dmg = pet.BaseDamage + pet.DamageBonus;
+                monster.MaxHp -= dmg;
+                return $"Попадание.\n HP цели:{monster.MaxHp}";
+            }
+            else
+            {
+                Expedition expedition = DataBaseContext.GetExpeditionByPetCharacterID(pet.Character.ID);
+                DataBaseContext.PetCurrentHPForExpeditionCrossByExpeditionID(expedition.Id);
+                return "Промах";
+            }
+        }
+
+        private int D20()
+        {
+            return new Random().Next(21);
+        }
+        private int D12()
+        {
+            return new Random().Next(13);
+        }
+        private int D10()
+        {
+            return new Random().Next(11);
+        }
+        private int D8()
+        {
+            return new Random().Next(9);
+        }
+        private int D6()
+        {
+            return new Random().Next(7);
+        }
+        private int D4()
+        {
+            return new Random().Next(5);
+        }
     }
 }
