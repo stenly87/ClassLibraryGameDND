@@ -14,21 +14,23 @@ namespace WebApplication1.Controllers
         {
             return DataBaseContext.GetAllEvents();
         }
+
         [HttpPost("AddEvent")]
         public void AddEvent(Event ev)
         {
             DataBaseContext.AddEvent(ev);
         }
+
         [HttpPost("EditEvent")]
         public void EditEvent(Event ev)
         {
             DataBaseContext.EditEvent(ev);
         }
+
         [HttpPost("DeleteEvent")]
         public void DeleteEvent(Event ev)
         {
             DataBaseContext.DeleteEvent(ev);
         }
-
     }
 }
