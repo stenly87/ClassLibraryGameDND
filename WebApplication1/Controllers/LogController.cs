@@ -27,7 +27,7 @@ namespace WebApplication1.Controllers
             DataBaseContext.EditLog(log);
         }
 
-        [HttpPost("DeleteLog/{logId}")]
+        [HttpPost("DeleteLog")]
         public void DeleteLog(int logId)
         {
             DataBaseContext.DeleteLog(logId);

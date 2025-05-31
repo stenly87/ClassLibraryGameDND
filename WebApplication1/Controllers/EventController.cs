@@ -27,7 +27,7 @@ namespace WebApplication1.Controllers
             DataBaseContext.EditEvent(ev);
         }
 
-        [HttpPost("DeleteEvent/{eventId}")]
+        [HttpPost("DeleteEvent")]
         public void DeleteEvent(int eventId)
         {
             DataBaseContext.DeleteEvent(eventId);

@@ -15,7 +15,7 @@ namespace WebApplication1.Controllers
             DataBaseContext.AddEventExpeditionCross(ex, eventId, expId, logId);
         }
 
-        [HttpPost("DeleteExpedition/{expId}")]
+        [HttpPost("DeleteExpedition")]
         public void DeleteEventExpeditionCross(int expId)
         {
             DataBaseContext.DeleteEventExpeditionCross(expId);
