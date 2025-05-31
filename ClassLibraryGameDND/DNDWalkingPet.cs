@@ -34,7 +34,7 @@ namespace ClassLibraryGameDND
         public string StartFight(Pet pet, Monster monster)
         {
             var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
-            var result = D20();
+            var result = Dice.Rolling("1d20");
             bool autofail = result == 1;
             result = pet.BAB + pet.DamageBonus + statBonus + result;
 
