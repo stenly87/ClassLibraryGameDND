@@ -9,10 +9,10 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class ExpeditionController : ControllerBase
     {
-        [HttpGet("GetAllExpeditions")]
-        public List<Expedition> GetAllExpeditions()
+        [HttpGet("GetAllExpeditionsByIdCharacter/{id}")]
+        public List<Expedition> GetAllExpeditionsByIdCharacter(int id)
         {
-            return DataBaseContext.GetAllExpeditions();
+            return DataBaseContext.GetAllExpeditionsByIdCharacter(id);
         }
 
         [HttpPost("AddExpedition")]
@@ -21,16 +21,11 @@ namespace WebApplication1.Controllers
             DataBaseContext.AddExpedition(ex);
         }
 
-        [HttpPost("EditExpedition")]
-        public void EditExpedition(Expedition ex)
-        {
-            DataBaseContext.EditExpedition(ex);
-        }
 
-        [HttpPost("DeleteExpedition")]
-        public void DeleteExpedition(Expedition ex)
+        [HttpPost("DeleteExpedition/{expId}")]
+        public void DeleteExpedition(int expId)
         {
-            DataBaseContext.DeleteExpedition(ex);
+            DataBaseContext.DeleteExpedition(expId);
         }
     }
 }

@@ -27,10 +27,10 @@ namespace WebApplication1.Controllers
             DataBaseContext.EditEvent(ev);
         }
 
-        [HttpPost("DeleteEvent")]
-        public void DeleteEvent(Event ev)
+        [HttpPost("DeleteEvent/{eventId}")]
+        public void DeleteEvent(int eventId)
         {
-            DataBaseContext.DeleteEvent(ev);
+            DataBaseContext.DeleteEvent(eventId);
         }
     }
 }

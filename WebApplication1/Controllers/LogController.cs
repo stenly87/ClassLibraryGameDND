@@ -27,10 +27,10 @@ namespace WebApplication1.Controllers
             DataBaseContext.EditLog(log);
         }
 
-        [HttpPost("DeleteLog")]
-        public void DeleteLog(Log log)
+        [HttpPost("DeleteLog/{logId}")]
+        public void DeleteLog(int logId)
         {
-            DataBaseContext.DeleteLog(log);
+            DataBaseContext.DeleteLog(logId);
         }
     }
 }
