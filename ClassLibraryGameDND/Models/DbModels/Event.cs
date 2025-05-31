@@ -11,5 +11,7 @@ namespace ClassLibraryGameDND.Models.DbModels
         public int Id { get; set; }
 
         public string EventName { get; set; }
+        
+        public string Stat {  get; set; }
     }
 }
