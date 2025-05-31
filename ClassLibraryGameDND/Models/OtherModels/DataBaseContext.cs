@@ -14,6 +14,11 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public DataBaseContext(MySqlConnection connection)
             => _con = connection;
 
+        private static void ExecuteRequest(MySqlCommand cmd)
+        {
+            MySqlCommand cmd = connection.CreateCommand("insert into `Clients` Values (0, @fname, @lname);select LAST_INSERT_ID();");
+        }
+
         public static void AddEvent(Event ev)
         {
             throw new NotImplementedException();
