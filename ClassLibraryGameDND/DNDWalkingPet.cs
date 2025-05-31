@@ -7,11 +7,14 @@ namespace ClassLibraryGameDND
 {
     public class DNDWalkingPet
     {
-        private readonly MySqlConnection connection;
+        private readonly DataBaseContext connection;
 
         public DNDWalkingPet(MySqlConnection connection)
+            => this.connection = new DataBaseContext(connection);
+
+        public string Test()
         {
-            this.connection = connection;
+            return "";
         }
 
         public string GetStatus(Character character)
