@@ -37,7 +37,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
                 localPet.WIS = (int)jObj["WIS"];
                 localPet.Will = (int)jObj["Will"];
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ;
             }
