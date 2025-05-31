@@ -109,6 +109,11 @@ namespace ClassLibraryGameDND.Models.OtherModels
             throw new NotImplementedException();
         }
 
+        internal static List<Event> GetCompletedEventsFromCrossByExpeditionID(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         internal static void PetCurrentHPForExpeditionCrossByExpeditionID(int id)
         {
             throw new NotImplementedException();

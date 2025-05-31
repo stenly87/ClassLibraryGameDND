@@ -24,11 +24,12 @@ namespace ClassLibraryGameDND
             StringBuilder sb = new StringBuilder();
             Expedition expedition = DataBaseContext.GetExpeditionByPetCharacterID(pet.Character.ID);
             int PetCurrentHP = DataBaseContext.GetPetCurrentHPFromCrossByExpeditionID(expedition.Id);
-            //List<Event> events = DataBaseContext.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
+            List<Event> events = DataBaseContext.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
             sb.Append($"PetHP: {PetCurrentHP}\n");
             sb.Append("Completed events:\n");
             foreach (Event e in events)
                 sb.Append($"{e.EventName}\n");
+            return "";
         }
 
         public string StartFight(Pet pet, Monster monster)
