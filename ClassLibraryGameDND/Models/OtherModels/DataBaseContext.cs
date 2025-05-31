@@ -14,9 +14,24 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public DataBaseContext(MySqlConnection connection)
             => _con = connection;
 
-        public static List<Event> GetEvents()
+        public static void AddEvent(Event ev)
         {
-            return [];
+            throw new NotImplementedException();
+        }
+
+        public static void DeleteEvent(Event ev)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void EditEvent(Event ev)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static List<Event> GetAllEvents()
+        {
+            throw new NotImplementedException();
         }
     }
 }
