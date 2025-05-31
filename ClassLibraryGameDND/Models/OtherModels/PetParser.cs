@@ -48,6 +48,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             foreach (var part in petParts)
             {
                 var stats = part.Split(":");
+
                 switch (stats[0])
                 {
                     case "Character":
