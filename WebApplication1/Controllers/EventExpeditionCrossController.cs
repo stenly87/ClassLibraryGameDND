@@ -7,12 +7,12 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExpeditionController : ControllerBase
+    public class EventExpeditionCrossController : ControllerBase
     {
-        [HttpGet("GetAllExpeditionsByIdCharacter/{id}")]
-        public List<Expedition> GetAllExpeditionsByIdCharacter(int id)
+        [HttpGet("GetAllExpeditions")]
+        public List<Expedition> GetAllExpeditions()
         {
-            return DataBaseContext.GetAllExpeditionsByIdCharacter(id);
+            return DataBaseContext.GetAllExpeditions();
         }
 
         [HttpPost("AddExpedition")]
@@ -21,6 +21,11 @@ namespace WebApplication1.Controllers
             DataBaseContext.AddExpedition(ex);
         }
 
+        [HttpPost("EditExpedition")]
+        public void EditExpedition(Expedition ex)
+        {
+            DataBaseContext.EditExpedition(ex);
+        }
 
         [HttpPost("DeleteExpedition")]
         public void DeleteExpedition(Expedition ex)

@@ -79,7 +79,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
             throw new NotImplementedException();
         }
 
-        public static List<Expedition> GetAllExpeditions()
+
+        public static List<Expedition> GetAllExpeditionsByIdCharacter(int id)
         {
             throw new NotImplementedException();
         }
