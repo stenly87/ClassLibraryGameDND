@@ -52,29 +52,5 @@ namespace ClassLibraryGameDND
             }
         }
 
-        private int D20()
-        {
-            return new Random().Next(21);
-        }
-        private int D12()
-        {
-            return new Random().Next(13);
-        }
-        private int D10()
-        {
-            return new Random().Next(11);
-        }
-        private int D8()
-        {
-            return new Random().Next(9);
-        }
-        private int D6()
-        {
-            return new Random().Next(7);
-        }
-        private int D4()
-        {
-            return new Random().Next(5);
-        }
     }
 }

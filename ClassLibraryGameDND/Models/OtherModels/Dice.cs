@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ClassLibraryGameDND.Models.OtherModels
 {
-    public class Dice
+    public static class Dice
     {
-        public int Rolling(string dice)
+        public static int Rolling(string dice)
         {
             if (InvalidnessCheck(dice))
                 throw new ArgumentException("Ошибка в валидности переданого кубика!");
@@ -27,7 +27,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             return result;
         }
 
-        private bool InvalidnessCheck(string dice)
+        private static bool InvalidnessCheck(string dice)
         {
             var result = true;
 
