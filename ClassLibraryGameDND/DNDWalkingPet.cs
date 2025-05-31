@@ -29,7 +29,6 @@ namespace ClassLibraryGameDND
             sb.Append("Completed events:\n");
             foreach (Event e in events)
                 sb.Append($"{e.EventName}\n");
-            return "";
         }
 
         public string StartFight(Pet pet, Monster monster)
