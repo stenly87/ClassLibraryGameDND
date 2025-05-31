@@ -114,7 +114,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             throw new NotImplementedException();
         }
 
-        internal static void PetCurrentHPForExpeditionCrossByExpeditionID(int id)
+        public static void PetCurrentHPForExpeditionCrossByExpeditionID(int id)
         {
             throw new NotImplementedException();
         }
