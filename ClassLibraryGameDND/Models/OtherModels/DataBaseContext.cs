@@ -33,5 +33,20 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             throw new NotImplementedException();
         }
+
+        public static List<Pet> GetCharacterPets()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Expedition GetExpeditionByPetCharacterID(int iD)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static int GetPetCurrentHPFromCrossByExpeditionID(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
