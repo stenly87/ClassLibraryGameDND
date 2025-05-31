@@ -28,7 +28,7 @@ namespace ClassLibraryGameDND
             sb.Append($"PetHP: {PetCurrentHP}\n");
             sb.Append("Completed events:\n");
             foreach (Event e in events)
-                sb.Append($"{e.EventName}\n");
+                sb.Append($"{e.EventName}\n"); 
         }
 
         public string StartFight(Pet pet, Monster monster)
