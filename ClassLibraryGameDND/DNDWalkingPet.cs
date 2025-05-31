@@ -14,11 +14,6 @@ namespace ClassLibraryGameDND
             this.connection = connection;
         }
 
-        public string Test()
-        {
-            return connection.ConnectionString;
-        }
-
         public string GetStatus(Character character)
         {
             List<Pet> pets = DataBaseContext.GetCharacterPets();
@@ -31,8 +26,6 @@ namespace ClassLibraryGameDND
             sb.Append("Completed events:\n");
             foreach (Event e in events)
                 sb.Append($"{e.EventName}\n");
-            
         }
-        
     }
 }
