@@ -31,6 +31,51 @@ namespace ClassLibraryGameDND
                 sb.Append($"{e.EventName}\n"); 
         }
 
+        public string AddExpedition(Character character, string Pet)
+        {
+            StringBuilder sb = new StringBuilder();
+            Pet pet = PetParser.PetParse(Pet);
+            var eventsCount = Dice.Rolling("1d8");
+            var petHp = pet.MaxHP;
+            for(int i = 0; i < eventsCount; i++)
+            {
+                if (petHp <= 0)
+                    break;
+                else
+                {
+                    Random rnd = new Random();
+                    List<Event> events = DataBaseContext.GetAllEvents();
+
+                    Event ev = events.FirstOrDefault(s => s.Id == rnd.Next(events.Count));
+                    var stat = ev.Stat;
+                    var rollDice = Dice.Rolling("1d20");
+                    bool autofail = rollDice == 1;
+                    switch (stat)
+                    {
+                        case "CHA":
+                            {
+                                //if(autofail || (pet.CHA < rollDice))
+                                //    var attack
+                                break;
+                            }
+                            
+                        case "CON":
+                            break;
+                        case "DEX":
+                            break;
+                        case "INT":
+                            break;
+                        case "STR":
+                            break;
+                        case "WIS":
+                            break;
+                    }
+                }
+            }
+
+
+            return sb.ToString();
+        }
         public string StartFight(Pet pet, Monster monster)
         {
             var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
