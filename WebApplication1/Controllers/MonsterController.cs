@@ -27,7 +27,7 @@ namespace WebApplication1.Controllers
             DataBaseContext.EditMonster(mon);
         }
 
-        [HttpPost("DeleteMonster/{monId}")]
+        [HttpPost("DeleteMonster")]
         public void DeleteMonster(int monId)
         {
             DataBaseContext.DeleteMonster(monId);
