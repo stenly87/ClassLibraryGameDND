@@ -36,7 +36,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
                 result = false;
 
             var diceValue = int.Parse(dice.Split('d', StringSplitOptions.RemoveEmptyEntries)[1]);
-            int[] validValues = [4, 6, 8, 10, 12, 20];
+            int[] validValues = [2, 4, 6, 8, 10, 12, 20];
             if (!validValues.Contains(diceValue))
                 result = false;
 

@@ -9,11 +9,13 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class EventExpeditionCrossController : ControllerBase
     {
+
         [HttpPost("AddEventExpeditionCross")]
         public void AddEventExpeditionCross(EventExpeditionCross ex, int eventId, int expId, int logId)
         {
             DataBaseContext.AddEventExpeditionCross(ex, eventId, expId, logId);
         }
+
 
         [HttpPost("DeleteExpedition")]
         public void DeleteEventExpeditionCross(int expId)

@@ -152,5 +152,10 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             throw new NotImplementedException();
         }
+
+        public static void EditExpedition(Expedition ex)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

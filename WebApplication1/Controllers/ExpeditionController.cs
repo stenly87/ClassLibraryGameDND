@@ -20,6 +20,13 @@ namespace WebApplication1.Controllers
         {
             DataBaseContext.AddExpedition(ex);
         }
+        
+        [HttpPost("EditExpedition")]
+        public void EditExpedition(Expedition ex)
+        {
+            DataBaseContext.EditExpedition(ex);
+        }
+
 
 
         [HttpPost("DeleteExpedition")]
