@@ -21,7 +21,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
             try
             {
-                int id = (int)(ulong)cmd.ExecuteScalar();
+                int id = (int)(ulong)cmd.ExecuteNonQuery();
                 if (id > 0)
                     Console.WriteLine(id.ToString());
                 else
@@ -35,7 +35,13 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static void AddEvent(Event ev)
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand("insert into `Clients` Values (0, @fname, @lname);select LAST_INSERT_ID();", _con);
+            cmd.Parameters.Add(new MySqlParameter("fname", client.FirstName));
+
+            MySqlParameter lname = new MySqlParameter("lname", client.LastName);
+            cmd.Parameters.Add(lname);
+
+            ExecuteRequest(cmd);
         }
 
         public static void AddEventExpeditionCross(EventExpeditionCross ex, int eventId, int expId, int logId)
