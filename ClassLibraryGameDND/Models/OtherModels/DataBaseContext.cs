@@ -19,7 +19,6 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             if (_con is null || cmd is null)
                 return;
-
             try
             {
                 int id = (int)(ulong)cmd.ExecuteNonQuery();
@@ -33,6 +32,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
                 Console.WriteLine(ex.ToString());
             }
         }
+
+        
 
         public static void AddEvent(Event ev)
         {
