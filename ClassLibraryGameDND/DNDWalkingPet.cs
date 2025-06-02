@@ -1,5 +1,6 @@
 ﻿using ClassLibraryGameDND.Models.DbModels;
 using ClassLibraryGameDND.Models.OtherModels;
+using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using System.Text;
 
@@ -28,54 +29,158 @@ namespace ClassLibraryGameDND
             sb.Append($"PetHP: {PetCurrentHP}\n");
             sb.Append("Completed events:\n");
             foreach (Event e in events)
-                sb.Append($"{e.EventName}\n"); 
+                sb.Append($"{e.EventName}\n");
             return sb.ToString();
         }
 
-        public string AddExpedition(Character character, string Pet)
+        public void AddExpedition(Character character, string Pet)
         {
+            DateTime currentDate = DateTime.Now;
+            DateTime eventDate = DateTime.Now;
+
+            Random rnd = new Random();
+
             StringBuilder sb = new StringBuilder();
+
             Pet pet = PetParser.PetParse(Pet);
-            var eventsCount = Dice.Rolling("1d8");
             var petHp = pet.MaxHP;
-            for(int i = 0; i < eventsCount; i++)
+
+            Expedition expedition = new Expedition();
+            expedition.PlayerID = character.ID;
+            expedition.PetHP = petHp;
+            expedition.Pet = Pet;
+            expedition.Time = currentDate;
+            //false - в процессе; true - закончена
+            expedition.Status = false;
+            expedition.Reward = "хз";
+            DataBaseContext.AddExpedition(expedition);
+
+            while (!expedition.Status)
             {
-                if (petHp <= 0)
-                    break;
+                List<Event> events = DataBaseContext.GetAllEvents();
+                if (petHp > 0 && eventDate < currentDate.AddHours(8))
+                {
+                    
+
+                    var periodsOfTime = rnd.Next(30, 61);
+                    eventDate.AddMinutes(periodsOfTime);
+                    // бросаем кубик на проверку бой ли это
+                    var isBattle = Dice.Rolling("1d2");
+                    if (isBattle == 1)
+                    {
+                        List<Monster> monsters = DataBaseContext.GetAllMonsters();
+                        var mon = monsters.FirstOrDefault(s => s.Id == rnd.Next(monsters.Count));
+                        bool isBattleOver = false;
+                        pet.MaxHP = petHp;
+                        Log log = new Log();
+                        while (!isBattleOver)
+                        {
+                            if (petHp > 0 && mon.MaxHp > 0)
+                            {
+                                log.Description += StartFight(pet, mon);
+                            }
+                            else
+                            {
+                                EventExpeditionCross eventExpeditionCross = new EventExpeditionCross();
+                                eventExpeditionCross.Event = events.FirstOrDefault(s => s.EventName == "Бой");
+                                eventExpeditionCross.Expedition = expedition;
+                                eventExpeditionCross.Log = log;
+                                eventExpeditionCross.Time = eventDate;
+                                eventExpeditionCross.CurrentPetHP = petHp;
+                                DataBaseContext.AddEventExpeditionCross(eventExpeditionCross, eventExpeditionCross.Event.Id, expedition.Id, log.Id);
+                                isBattleOver = true;
+                                if (petHp <= 0)
+                                    expedition.Status = true;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        Event ev = events.FirstOrDefault(s => s.Id == rnd.Next(events.Count));
+                        var stat = ev.Stat;
+                        var rollDice = Dice.Rolling("1d20");
+                        bool autofail = rollDice == 1;
+                        switch (stat)
+                        {
+                            case "CHA":
+                                {
+                                    if (autofail || (pet.CHA < rollDice))
+                                    {
+
+
+                                    }
+                                    else
+                                    {
+
+                                    }
+
+                                    break;
+                                }
+
+                            case "CON":
+                                break;
+                            case "DEX":
+                                break;
+                            case "INT":
+                                break;
+                            case "STR":
+                                break;
+                            case "WIS":
+                                break;
+                            case "Fort":
+                                break;
+                            case "Refl":
+                                break;
+                            case "Will":
+                                break;
+                        }
+                    }
+
+
+                }
                 else
                 {
-                    Random rnd = new Random();
-                    List<Event> events = DataBaseContext.GetAllEvents();
-
-                    Event ev = events.FirstOrDefault(s => s.Id == rnd.Next(events.Count));
-                    var stat = ev.Stat;
-                    var rollDice = Dice.Rolling("1d20");
-                    bool autofail = rollDice == 1;
-                    switch (stat)
+                    expedition.Status = true;
+                    if (petHp > 0)
                     {
-                        case "CHA":
+                        List<Monster> monsters = DataBaseContext.GetAllMonsters().Where(s=> s.IsBoss == true).ToList();
+                        var mon = monsters.FirstOrDefault(s => s.Id == rnd.Next(monsters.Count));
+                        Log log = new Log();
+                        bool isBossFightOver = false;
+                        while (!isBossFightOver)
+                        {
+                            if (petHp > 0 && mon.MaxHp > 0)
                             {
-                                //if(autofail || (pet.CHA < rollDice))
-                                //    var attack
-                                break;
+                                log.Description += StartFight(pet, mon);
                             }
-                            
-                        case "CON":
-                            break;
-                        case "DEX":
-                            break;
-                        case "INT":
-                            break;
-                        case "STR":
-                            break;
-                        case "WIS":
-                            break;
+                            else
+                            {
+                                EventExpeditionCross eventExpeditionCross = new EventExpeditionCross();
+                                eventExpeditionCross.Event = events.FirstOrDefault(s => s.EventName == "Бой");
+                                eventExpeditionCross.Expedition = expedition;
+                                eventExpeditionCross.Log = log;
+                                eventExpeditionCross.Time = eventDate;
+                                eventExpeditionCross.CurrentPetHP = petHp;
+                                DataBaseContext.AddEventExpeditionCross(eventExpeditionCross, eventExpeditionCross.Event.Id, expedition.Id, log.Id);
+                                isBossFightOver = true;
+                                if (petHp > 0)
+                                {
+                                    //генерится награда
+                                    expedition.Reward = "";
+                                }
+                                
+                            }
+                        }
+                        DataBaseContext.EditExpedition(expedition);
                     }
+                    
+                    
+                 
+                    
                 }
             }
 
-
-            return sb.ToString();
         }
         public string StartFight(Pet pet, Monster monster)
         {
