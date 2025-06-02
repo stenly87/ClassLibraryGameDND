@@ -40,8 +40,6 @@ namespace ClassLibraryGameDND
 
             Random rnd = new Random();
 
-            StringBuilder sb = new StringBuilder();
-
             Pet pet = PetParser.PetParse(Pet);
             var petHp = pet.MaxHP;
 
