@@ -36,14 +36,11 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static void AddEvent(Event ev)
         {
 
-            //Между коментариями находится только пример запроса
-            //
             var cmd = new MySqlCommand("insert into `Events` Values (0, @EventName, @Stat);", _con);
             cmd.Parameters.Add(new MySqlParameter("EventName", ev.EventName));
 
             MySqlParameter lname = new MySqlParameter("Stat", ev.Stat);
             cmd.Parameters.Add(lname);
-            //
 
             ExecuteRequest(cmd);
         }
@@ -55,12 +52,23 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static void AddExpedition(Expedition ex)
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand("insert into `Expeditions` Values (0, @PlayerID, @Pet, @Time, @Status, @PetHP, @Reward);", _con);
+            cmd.Parameters.Add(new MySqlParameter("PlayerID", ex.PlayerID));
+            cmd.Parameters.Add(new MySqlParameter("Pet", ex.Pet));
+            cmd.Parameters.Add(new MySqlParameter("Time", ex.Time));
+            cmd.Parameters.Add(new MySqlParameter("Status", ex.Status));
+            cmd.Parameters.Add(new MySqlParameter("PetHP", ex.PetHP));
+            cmd.Parameters.Add(new MySqlParameter("Reward", ex.Reward));
+
+            ExecuteRequest(cmd);
         }
 
         public static void AddLog(Log log)
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand("insert into `Logs` Values (0, @Descripton);", _con);
+            cmd.Parameters.Add(new MySqlParameter("Description", log.Description));
+
+            ExecuteRequest(cmd);
         }
 
         public static void AddMonster(Monster mon)
