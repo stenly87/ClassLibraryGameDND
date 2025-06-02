@@ -21,11 +21,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
                 return;
             try
             {
-                int id = (int)(ulong)cmd.ExecuteNonQuery();
-                if (id > 0)
-                    Console.WriteLine(id.ToString());
-                else
-                    Console.WriteLine("Запрос не выполнен!!!");
+                cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -33,7 +29,49 @@ namespace ClassLibraryGameDND.Models.OtherModels
             }
         }
 
+        private static List<TValue> ExecuteSelectRequest<TValue>(MySqlCommand cmd)
+        {
+            List<TValue> result = [];
+            if (_con is null || cmd is null)
+                return result;
 
+            var dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                int id = dr.GetInt32(0);
+                string fname = string.Empty;
+                var request = cmd.CommandText.Split('\'')[1];
+
+                switch (request)
+                {
+                    case "Expeditions":
+                        break;
+                    case "Logs":
+                        break;
+                    case "Monsters":
+                        break;
+                    case "Events":
+                        break;
+                    case "EventExpeditionCross":
+                        break;
+                }
+
+                /*var obj = Activator.CreateInstance(typeof(TValue));
+                if (obj is Event eve)
+                {
+                    eve.Stat;
+                }
+                clients.Add(new Client
+                {
+                    ID = id,
+                    FirstName = fname,
+                    LastName = lname
+                });*/
+            }
+
+            return result;
+        }
 
         public static void AddEvent(Event ev)
         {
@@ -145,7 +183,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             var cmd = new MySqlCommand($"select * from `Events`;", _con);
 
-            ExecuteRequest(cmd);
+            return ExecuteSelectRequest<Event>(cmd);
         }
 
         public static List<Expedition> GetAllExpeditionsByIdCharacter(int id)
