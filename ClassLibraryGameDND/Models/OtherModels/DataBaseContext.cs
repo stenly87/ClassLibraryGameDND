@@ -15,24 +15,17 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public DataBaseContext(MySqlConnection connection)
             => _con = connection;
 
-        private static void ExecuteRequest(MySqlCommand cmd, bool isSel = false)
+        private static void ExecuteRequest(MySqlCommand cmd)
         {
             if (_con is null || cmd is null)
                 return;
             try
             {
-                if (isSel)
-                {
-                
-                }
+                int id = (int)(ulong)cmd.ExecuteNonQuery();
+                if (id > 0)
+                    Console.WriteLine(id.ToString());
                 else
-                {
-                    int id = (int)(ulong)cmd.ExecuteNonQuery();
-                    if (id > 0)
-                        Console.WriteLine(id.ToString());
-                    else
-                        Console.WriteLine("Запрос не выполнен!!!");
-                }
+                    Console.WriteLine("Запрос не выполнен!!!");
             }
             catch (Exception ex)
             {
@@ -40,7 +33,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             }
         }
 
-        
+
 
         public static void AddEvent(Event ev)
         {
