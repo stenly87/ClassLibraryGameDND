@@ -31,7 +31,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         private static List<TValue> ExecuteSelectRequest<TValue>(MySqlCommand cmd)
         {
-            List<TValue> result = [];
+            List<TValue> result;
             if (_con is null || cmd is null)
                 return result;
 
@@ -39,13 +39,13 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
             while (dr.Read())
             {
-                int id = dr.GetInt32(0);
-                string fname = string.Empty;
                 var request = cmd.CommandText.Split('\'')[1];
 
                 switch (request)
                 {
                     case "Expeditions":
+                        result = (List<TValue>?)Activator.CreateInstance(typeof(Expedition));
+                        result.Add(new Expedition());
                         break;
                     case "Logs":
                         break;
@@ -57,7 +57,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
                         break;
                 }
 
-                /*var obj = Activator.CreateInstance(typeof(TValue));
+                /*
+                var obj = Activator.CreateInstance(typeof(TValue));
                 if (obj is Event eve)
                 {
                     eve.Stat;
@@ -67,7 +68,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
                     ID = id,
                     FirstName = fname,
                     LastName = lname
-                });*/
+                });
+                */
             }
 
             return result;
