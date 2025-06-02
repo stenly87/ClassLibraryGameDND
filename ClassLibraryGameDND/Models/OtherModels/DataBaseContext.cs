@@ -38,8 +38,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
             //Между коментариями находится только пример запроса
             //
-            var cmd = new MySqlCommand("insert into `Clients` Values (0, @fname, @lname);select LAST_INSERT_ID();", _con);
-            cmd.Parameters.Add(new MySqlParameter("fname", client.FirstName));
+            var cmd = new MySqlCommand("insert into `Events` Values (0, @EventName, @Stat);", _con);
+            cmd.Parameters.Add(new MySqlParameter("EventName", ev.EventName));
 
             MySqlParameter lname = new MySqlParameter("Stat", ev.Stat);
             cmd.Parameters.Add(lname);
