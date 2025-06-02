@@ -15,17 +15,24 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public DataBaseContext(MySqlConnection connection)
             => _con = connection;
 
-        private static void ExecuteRequest(MySqlCommand cmd)
+        private static void ExecuteRequest(MySqlCommand cmd, bool isSel = false)
         {
             if (_con is null || cmd is null)
                 return;
             try
             {
-                int id = (int)(ulong)cmd.ExecuteNonQuery();
-                if (id > 0)
-                    Console.WriteLine(id.ToString());
+                if (isSel)
+                {
+                
+                }
                 else
-                    Console.WriteLine("Запись не добавлена");
+                {
+                    int id = (int)(ulong)cmd.ExecuteNonQuery();
+                    if (id > 0)
+                        Console.WriteLine(id.ToString());
+                    else
+                        Console.WriteLine("Запрос не выполнен!!!");
+                }
             }
             catch (Exception ex)
             {
