@@ -16,7 +16,21 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         private static void ExecuteRequest(MySqlCommand cmd)
         {
-            MySqlCommand cmd = connection.CreateCommand("insert into `Clients` Values (0, @fname, @lname);select LAST_INSERT_ID();");
+            if (_con is null || cmd is null)
+                return;
+
+            try
+            {
+                int id = (int)(ulong)cmd.ExecuteScalar();
+                if (id > 0)
+                    Console.WriteLine(id.ToString());
+                else
+                    Console.WriteLine("Запись не добавлена");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         public static void AddEvent(Event ev)
