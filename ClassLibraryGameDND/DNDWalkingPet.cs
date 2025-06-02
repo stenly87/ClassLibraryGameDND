@@ -29,6 +29,7 @@ namespace ClassLibraryGameDND
             sb.Append("Completed events:\n");
             foreach (Event e in events)
                 sb.Append($"{e.EventName}\n"); 
+            return sb.ToString();
         }
 
         public string AddExpedition(Character character, string Pet)
