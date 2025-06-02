@@ -35,11 +35,15 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static void AddEvent(Event ev)
         {
+
+            //Между коментариями находится только пример запроса
+            //
             var cmd = new MySqlCommand("insert into `Clients` Values (0, @fname, @lname);select LAST_INSERT_ID();", _con);
             cmd.Parameters.Add(new MySqlParameter("fname", client.FirstName));
 
             MySqlParameter lname = new MySqlParameter("lname", client.LastName);
             cmd.Parameters.Add(lname);
+            //
 
             ExecuteRequest(cmd);
         }
