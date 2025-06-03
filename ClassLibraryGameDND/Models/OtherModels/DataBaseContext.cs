@@ -254,8 +254,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static List<Event> GetAllEvents()
         {
             var cmd = new MySqlCommand($"select * from `Events`;", _con);
-
-            return ExecuteSelectRequestObject(cmd, typeof(Event));
+            return (List<Event>)ExecuteSelectRequestObject(cmd, typeof(Event)).Cast<Event>();
         }
 
         public static List<Expedition> GetAllExpeditionsByIdCharacter(int id)
