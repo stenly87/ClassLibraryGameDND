@@ -264,12 +264,14 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static List<Log> GetAllLogs()
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand($"select * from `Logs`;", _con);
+            return (List<Log>)ExecuteSelectRequestObject(cmd, typeof(Log)).Cast<Log>();
         }
 
         public static List<Monster> GetAllMonsters()
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand($"select * from `Monsters`;", _con);
+            return (List<Monster>)ExecuteSelectRequestObject(cmd, typeof(Monster)).Cast<Monster>();
         }
 
         public static List<Pet> GetCharacterPets()
