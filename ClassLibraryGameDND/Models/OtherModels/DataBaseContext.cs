@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using ClassLibraryGameDND.Models.DbModels;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
@@ -31,7 +32,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         private static List<TValue> ExecuteSelectRequest<TValue>(MySqlCommand cmd)
         {
-            List<TValue> result;
+            List<TValue> result = [];
             if (_con is null || cmd is null)
                 return result;
 
@@ -44,8 +45,17 @@ namespace ClassLibraryGameDND.Models.OtherModels
                 switch (request)
                 {
                     case "Expeditions":
-                        result = (List<TValue>?)Activator.CreateInstance(typeof(Expedition));
-                        result.Add(new Expedition());
+                        var obj = Activator.CreateInstance(typeof(TValue));
+                        if (obj is Event eve)
+                        {
+                            eve
+                        }
+                        clients.Add(new Client
+                        {
+                            ID = id,
+                            FirstName = fname,
+                            LastName = lname
+                        });
                         break;
                     case "Logs":
                         break;
