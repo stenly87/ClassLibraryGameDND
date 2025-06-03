@@ -123,12 +123,7 @@ namespace ClassLibraryGameDND
                         {
 
                         }
-
-
-                        
                     }
-
-
                 }
                 else
                 {
