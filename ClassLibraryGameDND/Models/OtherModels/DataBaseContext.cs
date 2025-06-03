@@ -238,17 +238,20 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static void EditEvent(Event ev)
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand($"update `Events` set `EventName`={ev.EventName}, `Stat`={ev.Stat}, `NegEffect`={ev.NegEffect}, `PosEffect`={ev.PosEffect},`NegStatChange`={ev.NegStatChange}, `PosStatChange`={ev.PosStatChange}, `ChangeableStat`={ev.ChangeableStat} where `ID` = {ev.Id}");
+            ExecuteRequest(cmd);
         }
 
         public static void EditLog(Log log)
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand($"update `Logs` set `Description`={log.Description} where `ID` = {log.Id}");
+            ExecuteRequest(cmd);
         }
 
         public static void EditMonster(Monster mon)
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand($"update `Monsters` set `IsBoss`={mon.IsBoss}, `Name`={mon.Name},`Level`={mon.Level},`AC`={mon.AC},`AttackBonus`={mon.AttackBonus},`BAB`={mon.BAB},`BaseDamage`={mon.BaseDamage},`CON`={mon.CON},`CritHitMult`={mon.CritHitMult},`DEX`={mon.DEX},`DamageBonus`={mon.DamageBonus},`MaxHP`={mon.MaxHp},`STR`={mon.STR} where `ID` = {mon.Id}");
+            ExecuteRequest(cmd);
         }
 
         public static List<Event> GetAllEvents()
@@ -301,7 +304,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static void EditExpedition(Expedition ex)
         {
-            throw new NotImplementedException();
+            var cmd = new MySqlCommand($"update `Expeditions` set `PlayerID`={ex.PlayerID},`Pet`={ex.Pet},`Time`={ex.Time},`Status`={ex.Status},`PetHP`={ex.PetHP},`Reward`={ex.Reward} where `ID` = {ex.Id}");
+            ExecuteRequest(cmd);
         }
     }
 }
