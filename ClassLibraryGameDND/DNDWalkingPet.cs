@@ -103,7 +103,7 @@ namespace ClassLibraryGameDND
                         var changStat = ev.ChangeableStat;
                         var propStatData = pet.GetType().GetProperty(stat);
                         var petStatValue = (int)propStatData.GetValue(pet);
-                        
+
                         EventExpeditionCross eventExpeditionCross = new EventExpeditionCross();
                         if (autofail || (petStatValue < rollDice))
                         {
@@ -112,17 +112,20 @@ namespace ClassLibraryGameDND
                             var petStat = (int)propData.GetValue(pet);
                             petStat += ev.NegStatChange;
                             propData.SetValue(pet, petStat);
-                            
-                            eventExpeditionCross.Event = ev;
-                            eventExpeditionCross.Expedition = expedition;
-                            eventExpeditionCross.Log = log;
-                            eventExpeditionCross.Time = eventDate;
-                            eventExpeditionCross.CurrentPetHP = petHp;
                         }
                         else
                         {
-
+                            log.Description = ev.PosEffect;
+                            var propData = pet.GetType().GetProperty(changStat);
+                            var petStat = (int)propData.GetValue(pet);
+                            petStat += ev.PosStatChange;
+                            propData.SetValue(pet, petStat);
                         }
+                        eventExpeditionCross.Event = ev;
+                        eventExpeditionCross.Expedition = expedition;
+                        eventExpeditionCross.Log = log;
+                        eventExpeditionCross.Time = eventDate;
+                        eventExpeditionCross.CurrentPetHP = petHp;
                     }
                 }
                 else
