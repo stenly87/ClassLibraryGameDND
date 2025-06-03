@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MySqlConnector;
+using System;
+using System.Diagnostics.Metrics;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using ClassLibraryGameDND.Models.DbModels;
 using Microsoft.Extensions.Logging;
-using MySqlConnector;
 
 namespace ClassLibraryGameDND.Models.OtherModels
 {
@@ -29,51 +28,122 @@ namespace ClassLibraryGameDND.Models.OtherModels
             }
         }
 
-        private static List<TValue> ExecuteSelectRequest<TValue>(MySqlCommand cmd)
+        private static List<object> ExecuteSelectRequestObject(MySqlCommand cmd, Type type)
         {
-            List<TValue> result;
+            List<object> result = new();
             if (_con is null || cmd is null)
                 return result;
-
             var dr = cmd.ExecuteReader();
 
-            while (dr.Read())
+            switch (type.Name)
             {
-                var request = cmd.CommandText.Split('\'')[1];
+                case "Expedition":
+                    while (dr.Read())
+                    {
+                        var exp = new Expedition
+                        {
+                            Id = dr.GetInt32("ID"),
+                            PlayerID = dr.GetInt32("PlayerID"),
+                            Pet = dr.GetString("Pet"),
+                            Time = dr.GetDateTime("Time"),
+                            Status = dr.GetBoolean("Status"),
+                            PetHP = dr.GetInt32("PetHP"),
+                            Reward = dr.GetString("Reward")
+                        };
+                        result.Add(exp);
+                    }
+                    break;
+                case "Event":
+                    while (dr.Read())
+                    {
+                        var ev = new Event
+                        {
+                            Id = dr.GetInt32("ID"),
+                            EventName = dr.GetString("EventName"),
+                            Stat = dr.GetString("Stat"),
+                            NegEffect = dr.GetString("NegEffect"),
+                            PosEffect = dr.GetString("PosEffect"),
+                            NegStatChange = dr.GetInt32("NegStatChange"),
+                            PosStatChange = dr.GetInt32("PosStatChange"),
+                            ChangeableStat = dr.GetString("ChangeableStat")
+                        };
+                        result.Add(ev);
+                    }
+                    break;
+                case "Log":
+                    while (dr.Read())
+                    {
+                        var log = new Log
+                        {
+                            Id = dr.GetInt32("ID"),
+                            Description = dr.GetString("Description"),
+                        };
+                        result.Add(log);
+                    }
+                    break;
+                case "Monster":
+                    while (dr.Read())
+                    {
+                        var mon = new Monster
+                        {
+                            Id = dr.GetInt32("ID"),
+                            IsBoss = dr.GetBoolean("IsBoss"),
+                            Name = dr.GetString("Name"),
+                            Level = dr.GetInt32("Level"),
+                            AC = dr.GetInt32("AC"),
+                            AttackBonus = dr.GetInt32("AttackBonus"),
+                            BAB = dr.GetInt32("BAB"),
+                            BaseDamage = dr.GetString("BaseDamage"),
+                            CON = dr.GetInt32("CON"),
+                            CritHitMult = dr.GetInt32("CritHitMult"),
+                            DEX = dr.GetInt32("DEX"),
+                            DamageBonus = dr.GetString("DamageBonus"),
+                            MaxHp = dr.GetInt32("MaxHP"),
+                            STR = dr.GetInt32("STR")
+                        };
+                    }
+                    break;
+                default:
+                    while (dr.Read())
+                    {
+                        Event ev = new Event();
+                        Log log = new Log();
+                        Expedition ex = new Expedition();
 
-                switch (request)
-                {
-                    case "Expeditions":
-                        result = (List<TValue>?)Activator.CreateInstance(typeof(Expedition));
-                        result.Add(new Expedition());
-                        break;
-                    case "Logs":
-                        break;
-                    case "Monsters":
-                        break;
-                    case "Events":
-                        break;
-                    case "EventExpeditionCross":
-                        break;
-                }
+                        var cmd2 = new MySqlCommand($"select * from `Events` where `ID`=@eventID;", _con);
+                        cmd2.Parameters.Add(new MySqlParameter("eventID", dr.GetInt32("EventID")));
+                        var events = ExecuteSelectRequestObject(cmd2, typeof(Event));
+                        foreach (Event e in events)
+                            ev = e;
 
-                /*
-                var obj = Activator.CreateInstance(typeof(TValue));
-                if (obj is Event eve)
-                {
-                    eve.Stat;
-                }
-                clients.Add(new Client
-                {
-                    ID = id,
-                    FirstName = fname,
-                    LastName = lname
-                });
-                */
+                        var cmd3 = new MySqlCommand($"select * from `Logs` where `ID`=@logID;", _con);
+                        cmd3.Parameters.Add(new MySqlParameter("logID", dr.GetInt32("LogID")));
+                        var logs = ExecuteSelectRequestObject(cmd2, typeof(Log));
+                        foreach (Log lg in logs)
+                            log = lg;
+
+                        var cmd4 = new MySqlCommand($"select * from `Expeditions` where `ID`=@expID;", _con);
+                        cmd4.Parameters.Add(new MySqlParameter("expID", dr.GetInt32("ExpeditionID")));
+                        var expeditions = ExecuteSelectRequestObject(cmd2, typeof(Expedition));
+                        foreach (Expedition exp in expeditions)
+                            ex = exp;
+
+                        var eventExpeditionCross = new EventExpeditionCross
+                        {
+                            Event = ev,
+                            Expedition = ex,
+                            Log = log,
+                            Time = dr.GetDateTime("Time"),
+                            CurrentPetHP = dr.GetInt32("CurrentPetHP")
+                        };
+                        result.Add(eventExpeditionCross);
+                    }
+                    break;
             }
-
             return result;
         }
+
+
 
         public static void AddEvent(Event ev)
         {
@@ -185,7 +255,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             var cmd = new MySqlCommand($"select * from `Events`;", _con);
 
-            return ExecuteSelectRequest<Event>(cmd);
+            return ExecuteSelectRequestObject(cmd, typeof(Event));
         }
 
         public static List<Expedition> GetAllExpeditionsByIdCharacter(int id)
