@@ -40,6 +40,8 @@
         
         public int Will { get; set; }
 
+        public int CurrentPetHP { get; set; }
+
         public override string ToString()
             => "Character:" + Character.ID + "AC:" + AC + "BAB:" + BAB + "BaseDamage:" + BaseDamage + "CHA:" + CHA + "CON:" + CON + "CritHitMult:" + CritHitMult + "DEX:" + DEX + "DamageBonus:" + DamageBonus + "Fort:" + Fort + "GoodEvil:" + GoodEvil + "INT:" + INT + "LawChaos:" + LawCHaos + "MaxHP:" + MaxHP + "Name:" + Name + "Refl:" + Refl + "STR:" + STR + "WIS:" + WIS + "Will:" + Will;
     }

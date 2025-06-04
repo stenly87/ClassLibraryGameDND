@@ -11,11 +11,16 @@ namespace WebApplication1.Controllers
     public class MainController : ControllerBase
     {
         [HttpPost("GetCurrentStatus")]
-        public string GetCurrentStatus(Character ch)
-            => new DNDWalkingPet(MySqlDB.Create()).GetStatus(ch);
+        public Status GetCurrentStatus(int characterId)
+            => new DNDWalkingPet(MySqlDB.Create()).GetStatus(characterId);
 
         [HttpPost("AddExpedition")]
         public void AddExpedition(string pet)
             => new DNDWalkingPet(MySqlDB.Create()).AddExpedition(PetParser.PetParse(pet).Character, pet);
+
+        [HttpPost("GetLog")]
+        public string GetLog(int logId)
+            => new DNDWalkingPet(MySqlDB.Create()).GetLog(logId);
+
     }
 }

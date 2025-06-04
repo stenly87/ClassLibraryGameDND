@@ -8,7 +8,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
 {
     public class Status
     {
-        public string Events { get; set; }
+        public string Info { get; set; }
+        public List<string> Events { get; set; }
         public List<int> LogId { get; set; }
     }
 }
