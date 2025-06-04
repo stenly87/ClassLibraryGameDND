@@ -161,7 +161,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             ExecuteRequest(request, [.. mySqlParameters]);
         }
 
-        public static void AddEventExpeditionCross(EventExpeditionCross ex, int eventId, int expId, int logId)
+        public static void AddEventExpeditionCross(EventExpeditionCross ex)
         {
             throw new NotImplementedException();
         }
@@ -219,6 +219,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static void DeleteEvent(int eventId)
             => ExecuteRequest($"DELETE from `Events` where `ID` = {eventId};");
 
+        //!!
         public static void DeleteEventExpeditionCross(int expId)
             => ExecuteRequest($"DELETE from `EventExpeditionCross` where `ID` = {expId};");
 
