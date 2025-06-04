@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using ClassLibraryGameDND.Models.DbModels;
+using System.Security.Cryptography;
 
 namespace ClassLibraryGameDND.Models.OtherModels
 {
@@ -161,10 +162,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             ExecuteRequest(request, [.. mySqlParameters]);
         }
 
-        public static void AddEventExpeditionCross(EventExpeditionCross ex)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public static void AddExpedition(Expedition ex)
         {
@@ -240,13 +238,13 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static void EditLog(Log log)
         {
             var cmd = new MySqlCommand($"update `Logs` set `Description`={log.Description} where `ID` = {log.Id}");
-            ExecuteRequest(cmd);
+            ExecuteRequest(cmd.CommandText);
         }
 
         public static void EditMonster(Monster mon)
         {
             var cmd = new MySqlCommand($"update `Monsters` set `IsBoss`={mon.IsBoss}, `Name`={mon.Name},`Level`={mon.Level},`AC`={mon.AC},`AttackBonus`={mon.AttackBonus},`BAB`={mon.BAB},`BaseDamage`={mon.BaseDamage},`CON`={mon.CON},`CritHitMult`={mon.CritHitMult},`DEX`={mon.DEX},`DamageBonus`={mon.DamageBonus},`MaxHP`={mon.MaxHp},`STR`={mon.STR} where `ID` = {mon.Id}");
-            ExecuteRequest(cmd);
+            ExecuteRequest(cmd.CommandText);
         }
 
         public static List<Event> GetAllEvents()
@@ -287,11 +285,9 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             throw new NotImplementedException();
         }
-
-        public static void EditExpedition(Expedition ex)
+        public static void AddEventExpeditionCross(EventExpeditionCross ex)
         {
-            var cmd = new MySqlCommand($"update `Expeditions` set `PlayerID`={ex.PlayerID},`Pet`={ex.Pet},`Time`={ex.Time},`Status`={ex.Status},`PetHP`={ex.PetHP},`Reward`={ex.Reward} where `ID` = {ex.Id}");
-            ExecuteRequest(cmd);
+            throw new NotImplementedException();
         }
     }
 }
