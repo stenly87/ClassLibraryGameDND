@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using ClassLibraryGameDND.Models.DbModels;
+using System.Security.Cryptography;
 
 namespace ClassLibraryGameDND.Models.OtherModels
 {
@@ -166,10 +167,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             ExecuteRequest(request, [.. mySqlParameters]);
         }
 
-        public static void AddEventExpeditionCross(EventExpeditionCross ex)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public static void AddExpedition(Expedition ex)
         {
@@ -242,10 +240,16 @@ namespace ClassLibraryGameDND.Models.OtherModels
             => ExecuteRequest($"update `Expeditions` set `PlayerID`={ex.PlayerID},`Pet`={ex.Pet},`Time`={ex.Time},`Status`={ex.Status},`PetHP`={ex.PetHP},`Reward`={ex.Reward} where `ID` = {ex.Id}");
 
         public static void EditLog(Log log)
-            => ExecuteRequest($"update `Logs` set `Description`={log.Description} where `ID` = {log.Id}");
+        {
+            var cmd = new MySqlCommand($"update `Logs` set `Description`={log.Description} where `ID` = {log.Id}");
+            ExecuteRequest(cmd.CommandText);
+        }
 
         public static void EditMonster(Monster mon)
-            => ExecuteRequest($"update `Monsters` set `IsBoss`={mon.IsBoss}, `Name`={mon.Name},`Level`={mon.Level},`AC`={mon.AC},`AttackBonus`={mon.AttackBonus},`BAB`={mon.BAB},`BaseDamage`={mon.BaseDamage},`CON`={mon.CON},`CritHitMult`={mon.CritHitMult},`DEX`={mon.DEX},`DamageBonus`={mon.DamageBonus},`MaxHP`={mon.MaxHp},`STR`={mon.STR} where `ID` = {mon.Id}");
+        {
+            var cmd = new MySqlCommand($"update `Monsters` set `IsBoss`={mon.IsBoss}, `Name`={mon.Name},`Level`={mon.Level},`AC`={mon.AC},`AttackBonus`={mon.AttackBonus},`BAB`={mon.BAB},`BaseDamage`={mon.BaseDamage},`CON`={mon.CON},`CritHitMult`={mon.CritHitMult},`DEX`={mon.DEX},`DamageBonus`={mon.DamageBonus},`MaxHP`={mon.MaxHp},`STR`={mon.STR} where `ID` = {mon.Id}");
+            ExecuteRequest(cmd.CommandText);
+        }
 
         public static List<Event> GetAllEvents()
             => (List<Event>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events`;", _con), typeof(Event)).Cast<Event>();
@@ -272,8 +276,15 @@ namespace ClassLibraryGameDND.Models.OtherModels
             throw new NotImplementedException();
         }
 
+
         public static Expedition GetExpeditionByCharacterID(int id)
             => (Expedition)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Expeditions` where `PlayerID` = {id} and `Status` = false ;", _con), typeof(Expedition)).Cast<Expedition>();
         
+
+        public static void AddEventExpeditionCross(EventExpeditionCross ex)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
