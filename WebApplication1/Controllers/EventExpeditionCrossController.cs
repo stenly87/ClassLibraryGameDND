@@ -11,9 +11,9 @@ namespace WebApplication1.Controllers
     {
 
         [HttpPost("AddEventExpeditionCross")]
-        public void AddEventExpeditionCross(EventExpeditionCross ex, int eventId, int expId, int logId)
+        public void AddEventExpeditionCross(EventExpeditionCross ex)
         {
-            DataBaseContext.AddEventExpeditionCross(ex, eventId, expId, logId);
+            DataBaseContext.AddEventExpeditionCross(ex);
         }
 
 
