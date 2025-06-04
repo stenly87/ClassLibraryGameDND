@@ -150,6 +150,11 @@ namespace ClassLibraryGameDND.Models.OtherModels
             return result;
         }
 
+        private static object ExecuteAndReturnValue(MySqlCommand cmd)
+        {
+            return cmd.ExecuteScalar();
+        }
+
         public static void AddEvent(Event ev)
         {
             var request = "insert into `Events` Values (0, @EventName, @Stat);";
@@ -217,9 +222,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static void DeleteEvent(int eventId)
             => ExecuteRequest($"DELETE from `Events` where `ID` = {eventId};");
 
-        //!!
         public static void DeleteEventExpeditionCross(int expId)
-            => ExecuteRequest($"DELETE from `EventExpeditionCross` where `ID` = {expId};");
+            => ExecuteRequest($"DELETE from `EventExpeditionCross` where `ExpeditionID` = {expId};");
 
         public static void DeleteExpedition(int expId)
             => ExecuteRequest($"DELETE from `Expeditions` where `ID` = {expId};");
@@ -250,30 +254,16 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static List<Event> GetAllEvents()
             => (List<Event>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events`;", _con), typeof(Event)).Cast<Event>();
 
-        public static List<Expedition> GetAllExpeditionsByIdCharacter(int id)
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public static List<Log> GetAllLogs()
             => (List<Log>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Logs`;", _con), typeof(Log)).Cast<Log>();
 
         public static List<Monster> GetAllMonsters()
             => (List<Monster>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters`;", _con), typeof(Monster)).Cast<Monster>();
 
-        public static List<Pet> GetCharacterPets()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Expedition GetExpeditionByPetCharacterID(int iD)
-        {
-            throw new NotImplementedException();
-        }
-
         public static int GetPetCurrentHPFromCrossByExpeditionID(int id)
         {
-            throw new NotImplementedException();
+           return  (int?)ExecuteAndReturnValue(new MySqlCommand($"select `CurrentPetHP` from `EventExpeditionCross` where `ExpeditionID` = {id};", _con)) ?? 0;
         }
 
         internal static List<Event> GetCompletedEventsFromCrossByExpeditionID(int id)
@@ -285,9 +275,16 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             throw new NotImplementedException();
         }
+
+
+        public static Expedition GetExpeditionByCharacterID(int id)
+            => (Expedition)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Expeditions` where `PlayerID` = {id} and `Status` = false ;", _con), typeof(Expedition)).Cast<Expedition>();
+        
+
         public static void AddEventExpeditionCross(EventExpeditionCross ex)
         {
             throw new NotImplementedException();
         }
+
     }
 }
