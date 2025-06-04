@@ -174,8 +174,7 @@ namespace ClassLibraryGameDND
             }
             else
             {
-                Expedition expedition = DataBaseContext.GetExpeditionByPetCharacterID(pet.Character.ID);
-                DataBaseContext.PetCurrentHPForExpeditionCrossByExpeditionID(expedition.Id);
+
                 return "Промах";
             }
         }

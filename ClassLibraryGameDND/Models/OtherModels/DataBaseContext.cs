@@ -149,6 +149,11 @@ namespace ClassLibraryGameDND.Models.OtherModels
             return result;
         }
 
+        private static object ExecuteAndReturnValue(MySqlCommand cmd)
+        {
+            return cmd.ExecuteScalar();
+        }
+
         public static void AddEvent(Event ev)
         {
             var request = "insert into `Events` Values (0, @EventName, @Stat);";
@@ -254,7 +259,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static int GetPetCurrentHPFromCrossByExpeditionID(int id)
         {
-            throw new NotImplementedException();
+           return  (int?)ExecuteAndReturnValue(new MySqlCommand($"select `CurrentPetHP` from `EventExpeditionCross` where `ExpeditionID` = {id};", _con)) ?? 0;
         }
 
         internal static List<Event> GetCompletedEventsFromCrossByExpeditionID(int id)
@@ -267,8 +272,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
             throw new NotImplementedException();
         }
 
-        public static Expedition GetExpeditionByCharacterID(int iD)
-            => (Expedition)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters`;", _con), typeof(Expedition)).Cast<Expedition>();
+        public static Expedition GetExpeditionByCharacterID(int id)
+            => (Expedition)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Expeditions` where `PlayerID` = {id} and `Status` = false ;", _con), typeof(Expedition)).Cast<Expedition>();
         
     }
 }
