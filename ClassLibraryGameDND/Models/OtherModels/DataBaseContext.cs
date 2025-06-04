@@ -219,9 +219,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static void DeleteEvent(int eventId)
             => ExecuteRequest($"DELETE from `Events` where `ID` = {eventId};");
 
-        //!!
         public static void DeleteEventExpeditionCross(int expId)
-            => ExecuteRequest($"DELETE from `EventExpeditionCross` where `ID` = {expId};");
+            => ExecuteRequest($"DELETE from `EventExpeditionCross` where `ExpeditionID` = {expId};");
 
         public static void DeleteExpedition(int expId)
             => ExecuteRequest($"DELETE from `Expeditions` where `ID` = {expId};");
