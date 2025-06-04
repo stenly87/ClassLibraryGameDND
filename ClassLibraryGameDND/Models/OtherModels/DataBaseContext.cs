@@ -245,26 +245,12 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static List<Event> GetAllEvents()
             => (List<Event>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events`;", _con), typeof(Event)).Cast<Event>();
 
-        public static List<Expedition> GetAllExpeditionsByIdCharacter(int id)
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public static List<Log> GetAllLogs()
             => (List<Log>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Logs`;", _con), typeof(Log)).Cast<Log>();
 
         public static List<Monster> GetAllMonsters()
             => (List<Monster>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters`;", _con), typeof(Monster)).Cast<Monster>();
-
-        public static List<Pet> GetCharacterPets()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Expedition GetExpeditionByPetCharacterID(int iD)
-        {
-            throw new NotImplementedException();
-        }
 
         public static int GetPetCurrentHPFromCrossByExpeditionID(int id)
         {
@@ -280,5 +266,9 @@ namespace ClassLibraryGameDND.Models.OtherModels
         {
             throw new NotImplementedException();
         }
+
+        public static Expedition GetExpeditionByCharacterID(int iD)
+            => (Expedition)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters`;", _con), typeof(Expedition)).Cast<Expedition>();
+        
     }
 }
