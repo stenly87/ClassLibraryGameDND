@@ -48,7 +48,7 @@ namespace ClassLibraryGameDND
             {
                 EventExpeditionCross eventExpeditionCross = new EventExpeditionCross();
                 Log log = new Log();
-                
+
                 if (petHp > 0 && eventDate < currentDate.AddHours(8))
                 {
                     var periodsOfTime = rnd.Next(30, 61);
@@ -64,11 +64,11 @@ namespace ClassLibraryGameDND
                         {
                             if (petHp > 0 && mon.MaxHp > 0)
                             {
-                                log.Description += StartFight(pet, mon);
+                                log.Description += StartFight(pet, mon,expedition);
                             }
                             else
                             {
-                                
+
                                 eventExpeditionCross.Event = events.FirstOrDefault(s => s.EventName == "Бой");
                                 eventExpeditionCross.Expedition = expedition;
                                 eventExpeditionCross.Log = log;
@@ -123,17 +123,17 @@ namespace ClassLibraryGameDND
                 {
                     expedition.Status = true;
                     if (petHp > 0)
-                    {  
+                    {
                         var bosses = monsters.Where(s => s.IsBoss == true).ToList();
                         var boss = bosses.FirstOrDefault(s => s.Id == rnd.Next(monsters.Count));
-                       
+
                         bool isBossFightOver = false;
                         while (!isBossFightOver)
                         {
                             if (petHp > 0 && boss.MaxHp > 0)
                             {
-                                log.Description += StartFight(pet, boss);
-                                
+                                log.Description += StartFight(pet, boss, expedition);
+
                             }
                             else
                             {
@@ -159,9 +159,11 @@ namespace ClassLibraryGameDND
             }
         }
 
-        public string StartFight(Pet pet, Monster monster)
+        public string StartFight(Pet pet, Monster monster, Expedition exp)
         {
+            StringBuilder sb = new StringBuilder();
             var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
+            var statBonusMonster = monster.DEX > monster.STR ? (monster.DEX - 10) / 2 : (monster.STR - 10) / 2;
             var result = Dice.Rolling("1d20");
             bool autofail = result == 1;
             result = pet.BAB + pet.DamageBonus + statBonus + result;
@@ -170,13 +172,25 @@ namespace ClassLibraryGameDND
             {
                 int dmg = pet.BaseDamage + pet.DamageBonus;
                 monster.MaxHp -= dmg;
-                return $"Попадание.\n HP цели:{monster.MaxHp}";
+                sb.Append($"Попадание.\n HP цели:{monster.MaxHp}\n");
             }
             else
             {
-
-                return "Промах";
+                var resultMonster = Dice.Rolling("1d20");
+                bool autofailMonster = resultMonster == 1;
+                resultMonster = monster.BAB + Dice.Rolling(monster.DamageBonus) + statBonusMonster + resultMonster;
+                if (!autofailMonster && (resultMonster == 20 || resultMonster > pet.AC))
+                {
+                    int dmgMonster = Dice.Rolling(monster.BaseDamage) + Dice.Rolling(monster.DamageBonus);
+                    var pethp = DataBaseContext.GetPetCurrentHPFromCrossByExpeditionID(exp.Id);
+                    exp.PetHP -= dmgMonster;
+                    DataBaseContext.EditExpedition(exp);
+                    sb.Append($"Попадание.\n HP цели:{pethp}\n");
+                }
+                else
+                    StartFight(pet, monster,exp);
             }
+            return sb.ToString();
         }
     }
 }
