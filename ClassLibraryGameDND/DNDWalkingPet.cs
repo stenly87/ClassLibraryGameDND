@@ -1,22 +1,13 @@
 ﻿using ClassLibraryGameDND.Models.DbModels;
 using ClassLibraryGameDND.Models.OtherModels;
-using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using System.Text;
 
 namespace ClassLibraryGameDND
 {
-    public class DNDWalkingPet
+    public class DNDWalkingPet(MySqlConnection connection)
     {
-        private readonly DataBaseContext connection;
-
-        public DNDWalkingPet(MySqlConnection connection)
-            => this.connection = new DataBaseContext(connection);
-
-        public string Test()
-        {
-            return "";
-        }
+        private readonly DataBaseContext connection = new(connection);
 
         public string GetStatus(Character character)
         {
@@ -38,7 +29,7 @@ namespace ClassLibraryGameDND
             DateTime currentDate = DateTime.Now;
             DateTime eventDate = DateTime.Now;
 
-            Random rnd = new Random();
+            Random rnd = new();
 
             Pet pet = PetParser.PetParse(Pet);
             var petHp = pet.MaxHP;
@@ -58,8 +49,6 @@ namespace ClassLibraryGameDND
                 List<Event> events = DataBaseContext.GetAllEvents();
                 if (petHp > 0 && eventDate < currentDate.AddHours(8))
                 {
-
-
                     var periodsOfTime = rnd.Next(30, 61);
                     eventDate.AddMinutes(periodsOfTime);
                     // бросаем кубик на проверку бой ли это
@@ -163,14 +152,10 @@ namespace ClassLibraryGameDND
                         }
                         DataBaseContext.EditExpedition(expedition);
                     }
-
-
-
-
                 }
             }
-
         }
+
         public string StartFight(Pet pet, Monster monster)
         {
             var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
@@ -191,6 +176,5 @@ namespace ClassLibraryGameDND
                 return "Промах";
             }
         }
-
     }
 }
