@@ -1,4 +1,6 @@
-﻿namespace ClassLibraryGameDND.Models.DbModels
+﻿using System.Text.Json.Serialization;
+
+namespace ClassLibraryGameDND.Models.DbModels
 {
     public class Monster
     {
@@ -26,8 +28,11 @@
 
         public string DamageBonus { get; set; }
 
-        public int MaxHp { get; set; }
+        public int MaxHP { get; set; }
 
         public int STR { get; set; }
+
+        [JsonIgnore]
+        public int CurrentPetHP { get; set; }
     }
 }

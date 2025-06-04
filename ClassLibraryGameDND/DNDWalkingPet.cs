@@ -43,21 +43,20 @@ namespace ClassLibraryGameDND
             return description;
         }
 
-        public void AddExpedition(Character character, string Pet)
+        public void AddExpedition(Pet pet)
         {
             DateTime currentDate = DateTime.Now;
             DateTime eventDate = DateTime.Now;
 
             Random rnd = new();
 
-            Pet pet = PetParser.PetParse(Pet);
             var petHp = pet.MaxHP;
             pet.CurrentPetHP=petHp;
 
             Expedition expedition = new Expedition();
-            expedition.PlayerID = character.ID;
+            expedition.PlayerID = pet.Character;
             expedition.PetHP = petHp;
-            expedition.Pet = Pet;
+            expedition.Pet = pet.ToString();
             expedition.Time = currentDate;
             //false - в процессе; true - закончена
             expedition.Status = false;
@@ -79,17 +78,20 @@ namespace ClassLibraryGameDND
                     var isBattle = Dice.Rolling("1d2");
                     if (isBattle == 1)
                     {
-                        var mon = monsters.FirstOrDefault(s => s.Id == rnd.Next(monsters.Count));
+                        var target = rnd.Next(1, monsters.Count);
+                        var mon = monsters.FirstOrDefault(s => s.Id == target);
+                        mon.CurrentPetHP = mon.MaxHP;
                         bool isBattleOver = false;
                         while (!isBattleOver)
                         {
-                            if (pet.CurrentPetHP > 0 && mon.MaxHp > 0)
+                            if (pet.CurrentPetHP > 0 && mon.MaxHP > 0)
                             {
-                                log.Description += StartFight(pet, mon);
+                                log.Description += StartFight(pet, mon, new StringBuilder());
+                                isBattleOver = true;
                             }
                             else
-                            {  
-                                eventExpeditionCross.Event = events.FirstOrDefault(s => s.EventName == "Бой");
+                            {
+                                eventExpeditionCross.Event = new Event { Id = 1 };
                                 eventExpeditionCross.Expedition = expedition;
                                 eventExpeditionCross.Log = log;
                                 eventExpeditionCross.Time = eventDate;
@@ -106,7 +108,8 @@ namespace ClassLibraryGameDND
                     }
                     else
                     {
-                        Event ev = events.FirstOrDefault(s => s.Id == rnd.Next(events.Count));
+                        var target = rnd.Next(1, events.Count);
+                        Event ev = events.FirstOrDefault(s => s.Id == target);
                         var stat = ev.Stat;
                         var rollDice = Dice.Rolling("1d20");
                         bool autofail = rollDice == 1;
@@ -146,18 +149,18 @@ namespace ClassLibraryGameDND
                     {
                         var bosses = monsters.Where(s => s.IsBoss == true).ToList();
                         var boss = bosses.FirstOrDefault(s => s.Id == rnd.Next(monsters.Count));
-
+                        boss.CurrentPetHP = boss.MaxHP;
                         bool isBossFightOver = false;
                         while (!isBossFightOver)
                         {
-                            if (pet.CurrentPetHP > 0 && boss.MaxHp > 0)
+                            if (pet.CurrentPetHP > 0 && boss.MaxHP > 0)
                             {
-                                log.Description += StartFight(pet, boss);
+                                log.Description += StartFight(pet, boss, new StringBuilder());
 
                             }
                             else
                             {
-                                eventExpeditionCross.Event = events.FirstOrDefault(s => s.EventName == "Бой");
+                                eventExpeditionCross.Event = new Event { Id = 1 };
                                 eventExpeditionCross.Expedition = expedition;
                                 eventExpeditionCross.Log = log;
                                 eventExpeditionCross.Time = eventDate;
@@ -179,45 +182,51 @@ namespace ClassLibraryGameDND
             }
         }
 
-        StringBuilder sbForStartFight = new StringBuilder();
-        public string StartFight(Pet pet, Monster monster)
+        
+        public string StartFight(Monster pet, Monster monster, StringBuilder sbForStartFight)
         {
-            var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
-            var statBonusMonster = monster.DEX > monster.STR ? (monster.DEX - 10) / 2 : (monster.STR - 10) / 2;
-            var result = Dice.Rolling("1d20");
-            bool autofail = result == 1;
-            result = pet.BAB + pet.DamageBonus + statBonus + result;
-            if (pet.CurrentPetHP < 1)
+            if (pet.CurrentPetHP < 1 && pet is Pet)
             {
-                sbForStartFight.Append("\nПитомец проиграл");
+                sbForStartFight.Append($"\n{pet.Name} проиграл");
                 return sbForStartFight.ToString();
             }
-            if (monster.MaxHp < 1)
+            if (monster.CurrentPetHP < 1 && monster is Pet)
             {
-                sbForStartFight.Append("\nПитомец победил");
+                sbForStartFight.Append($"\n{monster.Name} проиграл");
                 return sbForStartFight.ToString();
             }
 
-            if (!autofail && (result == 20 || result >= monster.AC))
+            if (pet.CurrentPetHP < 1 && pet is not Pet)
             {
-                int dmg = pet.BaseDamage + pet.DamageBonus;
-                monster.MaxHp -= dmg;
-                sbForStartFight.Append($"Питомец нанёс урон.\n HP цели:{monster.MaxHp}\n");
+                sbForStartFight.Append($"\n{pet.Name} победил");
+                return sbForStartFight.ToString();
             }
-            else
+            if (monster.CurrentPetHP < 1 && monster is not Pet)
             {
-                var resultMonster = Dice.Rolling("1d20");
-                bool autofailMonster = resultMonster == 1;
-                resultMonster = monster.BAB + Dice.Rolling(monster.DamageBonus) + statBonusMonster + resultMonster;
-                if (!autofailMonster && (resultMonster == 20 || resultMonster > pet.AC))
-                {
-                    int dmgMonster = Dice.Rolling(monster.BaseDamage) + Dice.Rolling(monster.DamageBonus);
-                    pet.CurrentPetHP -= dmgMonster;
-                    sbForStartFight.Append($"Питомец получил урон.\n HP пета:{pet.CurrentPetHP}\n");
-                }
-                else
-                    StartFight(pet, monster);
+                sbForStartFight.Append($"\n{monster.Name} победил");
+                return sbForStartFight.ToString();
             }
+
+            var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
+            var statBonusMonster = monster.DEX > monster.STR ? (monster.DEX - 10) / 2 : (monster.STR - 10) / 2;
+            var d20 = Dice.Rolling("1d20");
+            bool autofail = d20 == 1;
+            var result = pet.BAB + pet.AttackBonus + statBonus + d20;
+            bool attack = !autofail && (d20 == 20 || result >= monster.AC);
+            var attackResult = attack ? "Попадание" : "Промах";
+            sbForStartFight.Append($"{pet.Name} атакует {monster.Name}: {pet.BAB + pet.AttackBonus + statBonus} + {d20} против {monster.AC} : {attackResult}\n");
+            if (attack)
+            {
+                int diceBase = Dice.Rolling(pet.BaseDamage);
+                int diceBonus = Dice.Rolling(pet.DamageBonus);
+                int dmg = diceBase + diceBonus;
+                monster.CurrentPetHP -= dmg;                
+                sbForStartFight.Append($"{pet.Name} нанёс урон {dmg}.\n HP цели:{monster.CurrentPetHP}\n");
+            }
+
+            StartFight(monster, pet, sbForStartFight);
+
+
             return sbForStartFight.ToString();
         }
     }

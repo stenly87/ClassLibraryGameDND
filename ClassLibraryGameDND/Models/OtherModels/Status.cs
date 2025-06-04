@@ -9,7 +9,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
     public class Status
     {
         public string Info { get; set; }
-        public List<string> Events { get; set; }
-        public List<int> LogId { get; set; }
+        public List<string> Events { get; set; } = new List<string>();
+        public List<int> LogId { get; set; } = new List<int>();
     }
 }
