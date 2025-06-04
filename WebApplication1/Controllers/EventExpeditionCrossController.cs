@@ -17,10 +17,6 @@ namespace WebApplication1.Controllers
         }
 
 
-        [HttpPost("DeleteExpedition")]
-        public void DeleteEventExpeditionCross(int expId)
-        {
-            DataBaseContext.DeleteEventExpeditionCross(expId);
-        }
+       
     }
 }

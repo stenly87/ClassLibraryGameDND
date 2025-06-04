@@ -222,9 +222,6 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static void DeleteEvent(int eventId)
             => ExecuteRequest($"DELETE from `Events` where `ID` = {eventId};");
 
-        public static void DeleteEventExpeditionCross(int expId)
-            => ExecuteRequest($"DELETE from `EventExpeditionCross` where `ExpeditionID` = {expId};");
-
         public static void DeleteExpedition(int expId)
             => ExecuteRequest($"DELETE from `Expeditions` where `ID` = {expId};");
 
@@ -261,20 +258,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public static List<Monster> GetAllMonsters()
             => (List<Monster>)ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters`;", _con), typeof(Monster)).Cast<Monster>();
 
-        public static int GetPetCurrentHPFromCrossByExpeditionID(int id)
-        {
-           return  (int?)ExecuteAndReturnValue(new MySqlCommand($"select `CurrentPetHP` from `EventExpeditionCross` where `ExpeditionID` = {id};", _con)) ?? 0;
-        }
-
-        internal static List<Event> GetCompletedEventsFromCrossByExpeditionID(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void PetCurrentHPForExpeditionCrossByExpeditionID(int id)
-        {
-            throw new NotImplementedException();
-        }
+        public static List<CompleteEvent> GetCompletedEventsFromCrossByExpeditionID(int id)
+            => (List<CompleteEvent>)ExecuteSelectRequestObject(new MySqlCommand($"SELECT  e.EventName, eec.Time, eec.CurrentPetHP, eec.LogID FROM  EventExpeditionCross eec JOIN Events e ON eec.EventID = e.ID  WHERE eec.ExpeditionID = {id} and eec.Time < CURRENT_TIMESTAMP()  ORDER BY eec.Time;", _con), typeof(CompleteEvent)).Cast<CompleteEvent>();
 
 
         public static Expedition GetExpeditionByCharacterID(int id)
@@ -283,8 +268,25 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public static void AddEventExpeditionCross(EventExpeditionCross ex)
         {
-            throw new NotImplementedException();
+            var request = "insert into `EventExpeditionCross` Values (@EventID, @ExpeditionID, @LogID, @Time, @CurrentPetHP);";
+
+            List<MySqlParameter> mySqlParameters = [];
+
+            mySqlParameters.Add(new MySqlParameter("EventID", ex.Event.Id));
+            mySqlParameters.Add(new MySqlParameter("ExpeditionID", ex.Expedition.Id));
+            mySqlParameters.Add(new MySqlParameter("LogID", ex.Log.Id));
+            mySqlParameters.Add(new MySqlParameter("Time", ex.Time));
+            mySqlParameters.Add(new MySqlParameter("CurrentPetHP", ex.CurrentPetHP));
+            
+
+            ExecuteRequest(request, [.. mySqlParameters]);
         }
 
+        public static string GetLogFromCrossByLogId(int id)
+        {
+            return (string?)ExecuteAndReturnValue(new MySqlCommand($"SELECT  l.Description from EventExpeditionCross eec JOIN  Logs l ON eec.LogID = l.ID WHERE eec.LogID = {id}", _con)) ?? "";
+        }
+             
+      
     }
 }
