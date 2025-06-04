@@ -64,7 +64,7 @@ namespace ClassLibraryGameDND
                         {
                             if (petHp > 0 && mon.MaxHp > 0)
                             {
-                                log.Description += StartFight(pet, mon,expedition);
+                                log.Description += StartFight(pet, mon, expedition);
                             }
                             else
                             {
@@ -159,20 +159,30 @@ namespace ClassLibraryGameDND
             }
         }
 
+        StringBuilder sbForStartFight = new StringBuilder();
         public string StartFight(Pet pet, Monster monster, Expedition exp)
         {
-            StringBuilder sb = new StringBuilder();
             var statBonus = pet.DEX > pet.STR ? (pet.DEX - 10) / 2 : (pet.STR - 10) / 2;
             var statBonusMonster = monster.DEX > monster.STR ? (monster.DEX - 10) / 2 : (monster.STR - 10) / 2;
             var result = Dice.Rolling("1d20");
             bool autofail = result == 1;
             result = pet.BAB + pet.DamageBonus + statBonus + result;
+            if (exp.PetHP < 1)
+            {
+                sbForStartFight.Append("\nПитомец победил");
+                return sbForStartFight.ToString();
+            }
+            if (monster.MaxHp < 1)
+            {
+                sbForStartFight.Append("\nПитомец проиграл");
+                return sbForStartFight.ToString();
+            }
 
             if (!autofail && (result == 20 || result >= monster.AC))
             {
                 int dmg = pet.BaseDamage + pet.DamageBonus;
                 monster.MaxHp -= dmg;
-                sb.Append($"Попадание.\n HP цели:{monster.MaxHp}\n");
+                sbForStartFight.Append($"Питомец нанёс урон.\n HP цели:{monster.MaxHp}\n");
             }
             else
             {
@@ -185,12 +195,12 @@ namespace ClassLibraryGameDND
                     var pethp = DataBaseContext.GetPetCurrentHPFromCrossByExpeditionID(exp.Id);
                     exp.PetHP -= dmgMonster;
                     DataBaseContext.EditExpedition(exp);
-                    sb.Append($"Попадание.\n HP цели:{pethp}\n");
+                    sbForStartFight.Append($"Питомец получил урон.\n HP цели:{pethp}\n");
                 }
                 else
-                    StartFight(pet, monster,exp);
+                    StartFight(pet, monster, exp);
             }
-            return sb.ToString();
+            return sbForStartFight.ToString();
         }
     }
 }
