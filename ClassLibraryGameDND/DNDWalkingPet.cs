@@ -9,17 +9,38 @@ namespace ClassLibraryGameDND
     {
         private readonly DataBaseContext connection = new(connection);
 
-        public string GetStatus(Character character)
+        public Status GetStatus(Character character)
         {
+            Status status = new Status();
             StringBuilder sb = new StringBuilder();
             Expedition expedition = DataBaseContext.GetExpeditionByCharacterID(character.ID);
-            int PetCurrentHP = DataBaseContext.GetPetCurrentHPFromCrossByExpeditionID(expedition.Id);
-            List<Event> events = DataBaseContext.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
-            sb.Append($"Здоровье питомца: {PetCurrentHP}\n");
-            sb.Append("События:\n");
-            foreach (Event e in events)
-                sb.Append($"{e.EventName}\n");
-            return sb.ToString();
+            if (expedition != null) 
+            {
+                DateTime currentDate = DateTime.Now;
+                List<CompleteEvent> events = DataBaseContext.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
+                sb.Append($"Здоровье питомца: {events.Last().CurrentPetHP}\n"); 
+                sb.Append("События:\n");
+                foreach (CompleteEvent e in events)
+                {
+                    sb.Append($"{e.EventName}\n");
+                    status.LogId.Add(e.LogId);
+                }
+                    
+            }
+            else
+            {
+                sb.Append("Вы не участвуете в экспедиции :(");
+            }
+            status.Events = sb.ToString();
+
+            return status;
+        }
+
+        public string GetLog(int logId)
+        {
+            string description = DataBaseContext.GetLogFromCrossByLogId(logId);
+            
+            return description;
         }
 
         public void AddExpedition(Character character, string Pet)
@@ -67,8 +88,7 @@ namespace ClassLibraryGameDND
                                 log.Description += StartFight(pet, mon);
                             }
                             else
-                            {
-                                
+                            {   
                                 eventExpeditionCross.Event = events.FirstOrDefault(s => s.EventName == "Бой");
                                 eventExpeditionCross.Expedition = expedition;
                                 eventExpeditionCross.Log = log;
