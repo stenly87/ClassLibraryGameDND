@@ -30,7 +30,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             var diceValues = dice.Split(new char[] { 'd', '+' }, StringSplitOptions.RemoveEmptyEntries);
             if (!int.TryParse(diceValues[0], out _))
                 return true;
-            if (!int.TryParse(diceValues[1], out _))
+            if ( diceValues.Length > 1 && !int.TryParse(diceValues[1], out _))
                 return true;
             if (diceValues.Length > 2 && !int.TryParse(diceValues[2], out _))
                 return true;

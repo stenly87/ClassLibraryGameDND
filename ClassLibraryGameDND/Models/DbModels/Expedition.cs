@@ -9,6 +9,7 @@
         public string Pet { get; set; }
 
         public DateTime Time { get; set; }
+        public DateTime FinishTime { get; set; }
 
         public bool Status { get; set; }
 
