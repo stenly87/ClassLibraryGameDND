@@ -178,25 +178,14 @@ namespace ClassLibraryGameDND
 
         public string StartFight(Monster pet, Monster monster, StringBuilder sbForStartFight)
         {
-            if (pet.CurrentPetHP < 1 && pet is Pet)
-            {
-                sbForStartFight.Append($"\n{pet.Name} проиграл");
-                return sbForStartFight.ToString();
-            }
-            if (monster.CurrentPetHP < 1 && monster is Pet)
-            {
-                sbForStartFight.Append($"\n{monster.Name} проиграл");
-                return sbForStartFight.ToString();
-            }
-
-            if (pet.CurrentPetHP < 1 && pet is not Pet)
-            {
-                sbForStartFight.Append($"\n{pet.Name} победил");
-                return sbForStartFight.ToString();
-            }
-            if (monster.CurrentPetHP < 1 && monster is not Pet)
+            if (pet.CurrentPetHP < 1)
             {
                 sbForStartFight.Append($"\n{monster.Name} победил");
+                return sbForStartFight.ToString();
+            }
+            if (monster.CurrentPetHP < 1)
+            {
+                sbForStartFight.Append($"\n{pet.Name} победил");
                 return sbForStartFight.ToString();
             }
 

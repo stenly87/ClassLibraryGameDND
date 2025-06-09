@@ -6,6 +6,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
     {
         public static int Rolling(string dice)
         {
+            if (string.IsNullOrEmpty(dice))
+                return 0;
             if (InvalidnessCheck(dice))
                 throw new ArgumentException("Ошибка в валидности переданого кубика!");
 

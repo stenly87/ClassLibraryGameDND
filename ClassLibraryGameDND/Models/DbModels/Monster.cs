@@ -8,7 +8,7 @@ namespace ClassLibraryGameDND.Models.DbModels
 
         public bool IsBoss { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
         public int Level { get; set; }
         
@@ -18,7 +18,7 @@ namespace ClassLibraryGameDND.Models.DbModels
 
         public int BAB { get; set; }
 
-        public string BaseDamage { get; set; }
+        public string BaseDamage { get; set; } = "";
 
         public int CON { get; set; }
 
@@ -26,7 +26,7 @@ namespace ClassLibraryGameDND.Models.DbModels
 
         public int DEX { get; set; }
 
-        public string DamageBonus { get; set; }
+        public string DamageBonus { get; set; } = "";
 
         public int MaxHP { get; set; }
 
