@@ -95,7 +95,7 @@ namespace ClassLibraryGameDND
                                 int statChange = Dice.Rolling("1d4"); ;
                                 pet.STR += statChange;
                                 pet.DEX += statChange;
-                                log.Description += $"\nпитомец повысил силу и ловкость на {statChange}";
+                                log.Description += $"\nПитомец повысил силу и ловкость на {statChange}";
                             }
                             eventExpeditionCross.Event = new Event { Id = 1 };
                             eventExpeditionCross.Expedition = expedition;
