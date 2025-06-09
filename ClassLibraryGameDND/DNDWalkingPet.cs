@@ -112,7 +112,7 @@ namespace ClassLibraryGameDND
                             var changStat = ev.ChangeableStat;
                             var propStatData = pet.GetType().GetProperty(stat);
                             var petStatValue = (int)propStatData.GetValue(pet);
-                            log.Description = $"{ev.EventName} ";
+                            log.Description = $"{ev.EventName}: ";
                             if (autofail || (petStatValue < rollDice))
                             {
                                 log.Description += ev.NegEffect;

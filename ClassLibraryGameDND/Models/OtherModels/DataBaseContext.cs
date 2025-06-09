@@ -308,7 +308,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
              => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters` where `IsBoss` = 1 order by rand() limit 1;", _con), typeof(Monster)).Select(s => (Monster)s).ToList().First();
 
         internal static Event GetRandomEvent()
-             => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events` order by rand() limit 1;", _con), typeof(Event)).Select(s => (Event)s).ToList().First();
+             => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events` where `ID`>1 order by rand() limit 1;", _con), typeof(Event)).Select(s => (Event)s).ToList().First();
 
         internal static DateTime GetCurrentTime()
         {
