@@ -84,7 +84,7 @@ namespace ClassLibraryGameDND
                         var periodsOfTime = rnd.Next(30, 61);
                         eventDate = eventDate.AddMinutes(periodsOfTime);
                         // бросаем кубик на проверку бой ли это
-                        var isBattle = Dice.Rolling("1d8");
+                        var isBattle = Dice.Rolling("1d4");
                         if (isBattle == 1)
                         {
                             var mon = DataBaseContext.GetRandomMonsterNotBoss() as Monster;
@@ -112,9 +112,10 @@ namespace ClassLibraryGameDND
                             var changStat = ev.ChangeableStat;
                             var propStatData = pet.GetType().GetProperty(stat);
                             var petStatValue = (int)propStatData.GetValue(pet);
+                            log.Description = $"{ev.EventName} ";
                             if (autofail || (petStatValue < rollDice))
                             {
-                                log.Description = ev.NegEffect;
+                                log.Description += ev.NegEffect;
                                 var propData = pet.GetType().GetProperty(changStat);
                                 var petStat = (int)propData.GetValue(pet);
                                 petStat += ev.NegStatChange;
@@ -122,7 +123,7 @@ namespace ClassLibraryGameDND
                             }
                             else
                             {
-                                log.Description = ev.PosEffect;
+                                log.Description += ev.PosEffect;
                                 var propData = pet.GetType().GetProperty(changStat);
                                 var petStat = (int)propData.GetValue(pet);
                                 petStat += ev.PosStatChange;
@@ -209,7 +210,7 @@ namespace ClassLibraryGameDND
 
             StartFight(monster, pet, sbForStartFight);
 
-
+              
             return sbForStartFight.ToString();
         }
     }
