@@ -88,7 +88,15 @@ namespace ClassLibraryGameDND
                         if (isBattle == 1)
                         {
                             var mon = DataBaseContext.GetRandomMonsterNotBoss() as Monster;
-                            mon.CurrentPetHP = mon.MaxHP; log.Description += StartFight(pet, mon, new StringBuilder());
+                            mon.CurrentPetHP = mon.MaxHP;
+                            log.Description += StartFight(pet, mon, new StringBuilder());
+                            if (pet.CurrentPetHP > 0)
+                            {
+                                int statChange = Dice.Rolling("1d4"); ;
+                                pet.STR += statChange;
+                                pet.DEX += statChange;
+                                log.Description += $"\nпитомец повысил силу и ловкость на {statChange}";
+                            }
                             eventExpeditionCross.Event = new Event { Id = 1 };
                             eventExpeditionCross.Expedition = expedition;
                             eventExpeditionCross.Log = log;
