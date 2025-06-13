@@ -7,11 +7,11 @@ namespace ClassLibraryGameDND.Models.OtherModels
 {
     public class DataBaseContext
     {
-        private static MySqlConnection _con;
+        private  MySqlConnection _con;
         public DataBaseContext(MySqlConnection connection)
             => _con = connection;
 
-        private static void ExecuteRequest(string request, params MySqlParameter[]? parameters)
+        private  void ExecuteRequest(string request, params MySqlParameter[]? parameters)
         {
             try
             {
@@ -31,9 +31,9 @@ namespace ClassLibraryGameDND.Models.OtherModels
             }
         }
 
-        private static List<object> ExecuteSelectRequestObject(MySqlCommand cmd, Type type)
+        private  List<object> ExecuteSelectRequestObject(MySqlCommand cmd, Type type)
         {
-            List<object> result = [];
+            List<object> result = new();
             if (_con is null || cmd is null)
                 return result;
 
@@ -112,138 +112,87 @@ namespace ClassLibraryGameDND.Models.OtherModels
                     break;
 
                 default:
-                   
+
                     throw new Exception("пизда");
 
             }
-
+            cmd.Dispose();
             return result;
         }
 
-        private static object ExecuteAndReturnValue(MySqlCommand cmd)
+        private object ExecuteAndReturnValue(MySqlCommand cmd)
         {
-            return cmd.ExecuteScalar();
+            object result = cmd.ExecuteScalar();
+            cmd.Dispose();
+            return result;
         }
 
-        public static void AddEvent(Event ev)
+        public void AddEvent(Event ev)
         {
             var request = "insert into `Events` Values (0, @EventName, @Stat);";
 
-            List<MySqlParameter> mySqlParameters = [];
-
-            mySqlParameters.Add(new MySqlParameter("EventName", ev.EventName));
-            mySqlParameters.Add(new MySqlParameter("Stat", ev.Stat));
-
-            ExecuteRequest(request, [.. mySqlParameters]);
+            ExecuteRequest(request, new MySqlParameter("EventName", ev.EventName), new MySqlParameter("Stat", ev.Stat));
             ev.Id = (int)(ulong)ExecuteAndReturnValue(new MySqlCommand("select LAST_INSERT_ID()", _con));
         }
 
-
-
-        public static void AddExpedition(Expedition ex)
+        public void AddExpedition(Expedition ex)
         {
             var request = "insert into `Expeditions` Values (@PlayerID, @Pet, @Time, @Status, 0, @PetHP, @Reward, @FinishTime);";
 
-            List<MySqlParameter> mySqlParameters = [];
-
-            mySqlParameters.Add(new MySqlParameter("PlayerID", ex.PlayerID));
-            mySqlParameters.Add(new MySqlParameter("Pet", ex.Pet));
-            mySqlParameters.Add(new MySqlParameter("Time", ex.Time));
-            mySqlParameters.Add(new MySqlParameter("Status", ex.Status));
-            mySqlParameters.Add(new MySqlParameter("PetHP", ex.PetHP));
-            mySqlParameters.Add(new MySqlParameter("Reward", ex.Reward));
-            mySqlParameters.Add(new MySqlParameter("FinishTime", ex.FinishTime));
-
-            ExecuteRequest(request, [.. mySqlParameters]);
+            ExecuteRequest(request,
+                new MySqlParameter("PlayerID", ex.PlayerID),
+                new MySqlParameter("Pet", ex.Pet),
+                new MySqlParameter("Time", ex.Time),
+                new MySqlParameter("Status", ex.Status),
+                new MySqlParameter("PetHP", ex.PetHP),
+                new MySqlParameter("Reward", ex.Reward),
+                new MySqlParameter("FinishTime", ex.FinishTime)
+            );
 
             ex.Id = (int)(ulong)ExecuteAndReturnValue(new MySqlCommand("select LAST_INSERT_ID()", _con));
         }
 
-        public static void AddLog(Log log)
+        public void AddLog(Log log)
         {
             var request = "insert into `Logs` Values (0, @Description);";
 
-            List<MySqlParameter> mySqlParameters = [];
-
-            mySqlParameters.Add(new MySqlParameter("Description", log.Description));
-
-            ExecuteRequest(request, [.. mySqlParameters]);
+            ExecuteRequest(request, new MySqlParameter("Description", log.Description));
             log.Id = (int)(ulong)ExecuteAndReturnValue(new MySqlCommand("select LAST_INSERT_ID()", _con));
         }
 
-        public static void AddMonster(Monster mon)
+        public void AddMonster(Monster mon)
         {
             var request = "insert into `Monsters` Values (0, @IsBoss, @Name, @Level, @AC, @AttackBonus, @BAB, @BaseDamage, @CON, @CritHitMult, @DEX, @DamageBonus, @MaxHP, @STR);";
 
-            List<MySqlParameter> mySqlParameters = [];
-
-            mySqlParameters.Add(new MySqlParameter("IsBoss", mon.IsBoss));
-            mySqlParameters.Add(new MySqlParameter("Name", mon.Name));
-            mySqlParameters.Add(new MySqlParameter("Level", mon.Level));
-            mySqlParameters.Add(new MySqlParameter("AC", mon.AC));
-            mySqlParameters.Add(new MySqlParameter("AttackBonus", mon.AttackBonus));
-            mySqlParameters.Add(new MySqlParameter("BAB", mon.BAB));
-            mySqlParameters.Add(new MySqlParameter("BaseDamage", mon.BaseDamage));
-            mySqlParameters.Add(new MySqlParameter("CON", mon.CON));
-            mySqlParameters.Add(new MySqlParameter("CritHitMult", mon.CritHitMult));
-            mySqlParameters.Add(new MySqlParameter("DEX", mon.DEX));
-            mySqlParameters.Add(new MySqlParameter("DamageBonus", mon.DamageBonus));
-            mySqlParameters.Add(new MySqlParameter("MaxHP", mon.MaxHP));
-            mySqlParameters.Add(new MySqlParameter("STR", mon.STR));
-
-            ExecuteRequest(request, [.. mySqlParameters]);
+            ExecuteRequest(request,
+                new MySqlParameter("IsBoss", mon.IsBoss),
+                new MySqlParameter("Name", mon.Name),
+                new MySqlParameter("Level", mon.Level),
+                new MySqlParameter("AC", mon.AC),
+                new MySqlParameter("AttackBonus", mon.AttackBonus),
+                new MySqlParameter("BAB", mon.BAB),
+                new MySqlParameter("BaseDamage", mon.BaseDamage),
+                new MySqlParameter("CON", mon.CON),
+                new MySqlParameter("CritHitMult", mon.CritHitMult),
+                new MySqlParameter("DEX", mon.DEX),
+                new MySqlParameter("DamageBonus", mon.DamageBonus),
+                new MySqlParameter("MaxHP", mon.MaxHP),
+                new MySqlParameter("STR", mon.STR)
+                );
             mon.Id = (int)(ulong)ExecuteAndReturnValue(new MySqlCommand("select LAST_INSERT_ID()", _con));
         }
 
-        public static void DeleteEvent(int eventId)
-            => ExecuteRequest($"DELETE from `Events` where `ID` = {eventId};");
-
-        public static void DeleteExpedition(int expId)
-            => ExecuteRequest($"DELETE from `Expeditions` where `ID` = {expId};");
-
-        public static void DeleteLog(int logId)
-            => ExecuteRequest($"DELETE from `Logs` where `ID` = {logId};");
-
-        public static void DeleteMonster(int monId)
-            => ExecuteRequest($"DELETE from `Monsters` where `ID` = {monId};");
-
-        public static void EditEvent(Event ev)
-            => ExecuteRequest($"update `Events` set `EventName`={ev.EventName}, `Stat`={ev.Stat}, `NegEffect`={ev.NegEffect}, `PosEffect`={ev.PosEffect},`NegStatChange`={ev.NegStatChange}, `PosStatChange`={ev.PosStatChange}, `ChangeableStat`={ev.ChangeableStat} where `ID` = {ev.Id}");
-        public static void EditExpedition(Expedition ex)
-        { 
-
-           ExecuteRequest($"update `Expeditions` set `PlayerID`={ex.PlayerID},`Pet`='{ex.Pet}',`Time`=@time,`Status`={(ex.Status ? 1 : 0)},`PetHP`={ex.PetHP},`FinishTime`=@finish, `Reward`='{ex.Reward}' where `ID` = {ex.Id}", new MySqlParameter("time",ex.Time), new MySqlParameter("finish", ex.FinishTime));
-
-        }
-
-        public static void EditLog(Log log)
+        public void EditExpedition(Expedition ex)
         {
-            using var cmd = new MySqlCommand($"update `Logs` set `Description`='{log.Description}' where `ID` = {log.Id}");
-            ExecuteRequest(cmd.CommandText);
+            ExecuteRequest($"update `Expeditions` set `Time`=@time,`Status`={(ex.Status ? 1 : 0)},`PetHP`={ex.PetHP},`FinishTime`=@finish, `Reward`='{ex.Reward}' where `ID` = {ex.Id}", new MySqlParameter("time", ex.Time), new MySqlParameter("finish", ex.FinishTime));
         }
 
-        public static void EditMonster(Monster mon)
-        {
-            using var cmd = new MySqlCommand($"update `Monsters` set `IsBoss`={mon.IsBoss}, `Name`='{mon.Name}',`Level`={mon.Level},`AC`={mon.AC},`AttackBonus`={mon.AttackBonus},`BAB`={mon.BAB},`BaseDamage`='{mon.BaseDamage}',`CON`={mon.CON},`CritHitMult`={mon.CritHitMult},`DEX`={mon.DEX},`DamageBonus`='{mon.DamageBonus}',`MaxHP`={mon.MaxHP},`STR`={mon.STR} where `ID` = {mon.Id}");
-            ExecuteRequest(cmd.CommandText);
-        }
-
-        public static List<Event> GetAllEvents()
-            => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events` where ID > 1;", _con), typeof(Event)).Cast<Event>().ToList();
-
-
-        public static List<Log> GetAllLogs()
-            => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Logs`;", _con), typeof(Log)).Cast<Log>().ToList();
-
-        public static List<Monster> GetAllMonsters()
-            => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters`;", _con), typeof(Monster)).Select(s => (Monster)s).ToList();
-
-        public static List<CompleteEvent> GetCompletedEventsFromCrossByExpeditionID(int id)
+        public List<CompleteEvent> GetCompletedEventsFromCrossByExpeditionID(int id)
             => ExecuteSelectRequestForCompleteEvent(new MySqlCommand($"SELECT  e.EventName, eec.Time, eec.CurrentPetHP, eec.LogID FROM  EventExpeditionCross eec JOIN Events e ON eec.EventID = e.ID  WHERE eec.ExpeditionID = {id} and eec.Time < CURRENT_TIMESTAMP()  ORDER BY eec.Time;", _con));
 
-        private static List<CompleteEvent> ExecuteSelectRequestForCompleteEvent(MySqlCommand mySqlCommand)
+        private List<CompleteEvent> ExecuteSelectRequestForCompleteEvent(MySqlCommand mySqlCommand)
         {
-            List<CompleteEvent> result = [];
+            List<CompleteEvent> result = new();
             if (_con is null || mySqlCommand is null)
                 return result;
 
@@ -260,57 +209,50 @@ namespace ClassLibraryGameDND.Models.OtherModels
                 };
                 result.Add(item);
             }
+            mySqlCommand.Dispose();
             return result;
         }
 
-
-
-        public static Expedition GetExpeditionByCharacterID(int id)
+        public  Expedition GetExpeditionByCharacterID(int id)
             => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Expeditions` where `PlayerID` = {id};", _con), typeof(Expedition)).Cast<Expedition>().Last();
 
-
-        public static int GetExpeditionIdByCharacterID(int id)
+        public  int GetExpeditionIdByCharacterID(int id)
         {
-            var find =ExecuteAndReturnValue(new MySqlCommand($"select `ID` from `Expeditions` where `PlayerID` = {id} and ( `Status` = false or `FinishTime` < CURRENT_TIMESTAMP());", _con));
-            if(find != null)
+            var find = ExecuteAndReturnValue(new MySqlCommand($"select `ID` from `Expeditions` where `PlayerID` = {id} and ( `Status` = false or `FinishTime` < CURRENT_TIMESTAMP());", _con));
+            if (find != null)
                 return -1;
             return 0;
         }
 
-
-
-        public static void AddEventExpeditionCross(EventExpeditionCross ex)
+        public  void AddEventExpeditionCross(EventExpeditionCross ex)
         {
             var request = "insert into `EventExpeditionCross` Values (@EventID, @Time, @ExpeditionID, @LogID, @CurrentPetHP);";
 
-            List<MySqlParameter> mySqlParameters = [];
-
-            mySqlParameters.Add(new MySqlParameter("EventID", ex.Event.Id));
-            mySqlParameters.Add(new MySqlParameter("ExpeditionID", ex.Expedition.Id));
-            mySqlParameters.Add(new MySqlParameter("LogID", ex.Log.Id));
-            mySqlParameters.Add(new MySqlParameter("Time", ex.Time));
-            mySqlParameters.Add(new MySqlParameter("CurrentPetHP", ex.CurrentPetHP));
-
-
-            ExecuteRequest(request, [.. mySqlParameters]);
+            ExecuteRequest(request,
+                new MySqlParameter("EventID", ex.Event.Id),
+                new MySqlParameter("ExpeditionID", ex.Expedition.Id),
+                new MySqlParameter("LogID", ex.Log.Id),
+                new MySqlParameter("Time", ex.Time),
+                new MySqlParameter("CurrentPetHP", ex.CurrentPetHP)
+                );
         }
 
-        public static string GetLogFromCrossByLogId(int id)
+        public  string GetLogFromCrossByLogId(int id)
         {
             return (string?)ExecuteAndReturnValue(new MySqlCommand($"SELECT  l.Description from EventExpeditionCross eec JOIN  Logs l ON eec.LogID = l.ID WHERE eec.LogID = {id}", _con)) ?? "";
         }
 
-        public static object GetRandomMonsterNotBoss()
+        public  object GetRandomMonsterNotBoss()
 
             => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters` where `IsBoss` = 0 order by rand() limit 1;", _con), typeof(Monster)).Select(s => (Monster)s).ToList().First();
 
-        public static Monster GetRandomMonsterBoss()
+        public  Monster GetRandomMonsterBoss()
              => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters` where `IsBoss` = 1 order by rand() limit 1;", _con), typeof(Monster)).Select(s => (Monster)s).ToList().First();
 
-        internal static Event GetRandomEvent()
+        internal  Event GetRandomEvent()
              => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events` where `ID`>1 order by rand() limit 1;", _con), typeof(Event)).Select(s => (Event)s).ToList().First();
 
-        internal static DateTime GetCurrentTime()
+        internal  DateTime GetCurrentTime()
         {
             return (DateTime)ExecuteAndReturnValue(new MySqlCommand("SELECT CURRENT_TIMESTAMP();", _con));
         }

@@ -5,22 +5,28 @@ using System.Text;
 
 namespace ClassLibraryGameDND
 {
-    public class DNDWalkingPet(MySqlConnection connection)
+    public class DNDWalkingPet
     {
-        private readonly DataBaseContext connection = new(connection);
+        private DataBaseContext db;
+
+        public void SetUpConnection(MySqlConnection connection)
+        {
+            this.db = new(connection);
+        }
 
         public Status GetStatus(int characterId)
         {
             Status status = new Status();
             StringBuilder sb = new StringBuilder();
-            Expedition expedition = DataBaseContext.GetExpeditionByCharacterID(characterId);
+            Expedition expedition = db.GetExpeditionByCharacterID(characterId);
             if (expedition != null)
             {
-                List<CompleteEvent> events = DataBaseContext.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
+                List<CompleteEvent> events = db.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
                 if (events.Count > 0)
                 {
                     sb.Append($"Здоровье питомца: {events.Last().CurrentPetHP}\n");
                     sb.Append("События:\n");
+                    status.Reward = expedition.Reward;
                     foreach (CompleteEvent e in events)
                     {
                         status.Events.Add(e.EventName);
@@ -34,7 +40,7 @@ namespace ClassLibraryGameDND
             }
             else
             {
-                sb.Append("Вы не участвуете в экспедиции :(");
+                sb.Append("Питомцев на прогулке не обнаружено");
             }
 
             status.Info = sb.ToString();
@@ -43,14 +49,14 @@ namespace ClassLibraryGameDND
 
         public string GetLog(int logId)
         {
-            string description = DataBaseContext.GetLogFromCrossByLogId(logId);
+            string description = db.GetLogFromCrossByLogId(logId);
 
             return description;
         }
 
         public bool CheckExpreditionExist(int charId)
         {
-            var find = DataBaseContext.GetExpeditionIdByCharacterID(charId);
+            var find = db.GetExpeditionIdByCharacterID(charId);
             return find != 0;
         }
 
@@ -76,8 +82,8 @@ namespace ClassLibraryGameDND
 
         public void AddExpedition(Pet pet)
         {
-            DateTime currentDate = DataBaseContext.GetCurrentTime();
-            DateTime eventDate = DataBaseContext.GetCurrentTime();
+            DateTime currentDate = db.GetCurrentTime();
+            DateTime eventDate = db.GetCurrentTime();
 
             Random rnd = new();
 
@@ -93,7 +99,7 @@ namespace ClassLibraryGameDND
             //false - в процессе; true - закончена
             expedition.Status = false;
             expedition.Reward = "хз";
-            DataBaseContext.AddExpedition(expedition);
+            db.AddExpedition(expedition);
 
             while (!expedition.Status)
             {
@@ -109,7 +115,7 @@ namespace ClassLibraryGameDND
                     if (isBattle == 1)
                     {
                         ev = new Event { Id = 1 };
-                        var mon = DataBaseContext.GetRandomMonsterNotBoss() as Monster;
+                        var mon = db.GetRandomMonsterNotBoss() as Monster;
                         mon.CurrentPetHP = mon.MaxHP;
                         log.Description += StartFight(pet, mon, new StringBuilder());
 
@@ -124,12 +130,12 @@ namespace ClassLibraryGameDND
                         {
                             expedition.FinishTime = eventDate;
                             expedition.Status = true;
-                            DataBaseContext.EditExpedition(expedition);
+                            db.EditExpedition(expedition);
                         }
                     }
                     else
                     {
-                        ev = DataBaseContext.GetRandomEvent() as Event;
+                        ev = db.GetRandomEvent() as Event;
                         var stat = ev.Stat;
                         var rollDice = Dice.Rolling("1d20");
                         bool autofail = rollDice == 1;
@@ -162,7 +168,7 @@ namespace ClassLibraryGameDND
                     {
                         ev = new Event { Id = 1 };
                         log.Description = "Сражение с боссом\n\n";
-                        var boss = DataBaseContext.GetRandomMonsterBoss() as Monster;
+                        var boss = db.GetRandomMonsterBoss() as Monster;
                         boss.CurrentPetHP = boss.MaxHP;
                         log.Description += StartFight(pet, boss, new StringBuilder());
                         if (pet.CurrentPetHP > 0)
@@ -171,7 +177,7 @@ namespace ClassLibraryGameDND
                             expedition.Reward = GetRandomReward();
                         }
                     }
-                    DataBaseContext.EditExpedition(expedition);
+                    db.EditExpedition(expedition);
                 }
                 if (ev != null)
                 {
@@ -181,8 +187,8 @@ namespace ClassLibraryGameDND
                     eventExpeditionCross.Log = log;
                     eventExpeditionCross.Time = eventDate;
                     eventExpeditionCross.CurrentPetHP = pet.CurrentPetHP;
-                    DataBaseContext.AddLog(log);
-                    DataBaseContext.AddEventExpeditionCross(eventExpeditionCross);
+                    db.AddLog(log);
+                    db.AddEventExpeditionCross(eventExpeditionCross);
                 }
             }
         }
