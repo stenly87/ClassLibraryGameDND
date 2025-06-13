@@ -9,7 +9,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             if (string.IsNullOrEmpty(dice))
                 return 0;
             if (InvalidnessCheck(dice))
-                throw new ArgumentException("Ошибка в валидности переданого кубика!");
+                return 0;
 
             var diceValues = dice.Split(new char[] { 'd', '+' }, StringSplitOptions.RemoveEmptyEntries);
             var times = int.Parse(diceValues[0]);

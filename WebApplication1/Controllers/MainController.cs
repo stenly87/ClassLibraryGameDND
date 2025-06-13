@@ -15,8 +15,15 @@ namespace WebApplication1.Controllers
             => new DNDWalkingPet(MySqlDB.Create()).GetStatus(characterId);
 
         [HttpPost("AddExpedition")]
-        public string AddExpedition([FromBody]Pet pet)
-            => new DNDWalkingPet(MySqlDB.Create()).AddExpedition(pet)? "Питомец отправился гулять" : "Питомец уже гуляет" ;
+        public string AddExpedition([FromBody] Pet pet)
+        {
+            var dnd = new DNDWalkingPet(MySqlDB.Create());
+            if (dnd.CheckExpreditionExist(pet.Character))
+                return "Питомец уже гуляет";
+
+            dnd.AddExpedition(pet);            
+            return "Питомец отправился гулять";
+        }
 
         [HttpPost("GetLog")]
         public string GetLog(int logId)
