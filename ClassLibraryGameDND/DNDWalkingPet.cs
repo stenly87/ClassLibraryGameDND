@@ -18,14 +18,14 @@ namespace ClassLibraryGameDND
         {
             Status status = new Status();
             Expedition expedition = db.GetExpeditionByCharacterID(characterId);
-            if (expedition != null)
+            if (expedition != null && !expedition.Status)
             {
                 status.Name = expedition.Pet;
                 status.Portrait = expedition.Portrait;
                 List<CompleteEvent> events = db.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
                 if (events.Count > 0)
                 {
-                    status.HP =  "Здоровье: " + events.Last().CurrentPetHP;
+                    status.HP = "Здоровье: " + events.Last().CurrentPetHP;
                     status.Reward = expedition.Reward;
                     int minutes = (int)events.Last().Time.Subtract(expedition.Time).TotalMinutes;
                     status.TimePass = "Прошло минут: " + minutes;
@@ -106,15 +106,17 @@ namespace ClassLibraryGameDND
             expedition.Reward = "хз";
             db.AddExpedition(expedition);
 
-            while (!expedition.Status)
+            bool end = false;
+            while (!end)
             {
                 Log log = new Log();
                 Event ev = null;
 
+                var periodsOfTime = rnd.Next(30, 61);
+                eventDate = eventDate.AddMinutes(periodsOfTime);
+
                 if (pet.CurrentPetHP > 0 && eventDate < currentDate.AddHours(8))
                 {
-                    var periodsOfTime = rnd.Next(30, 61);
-                    eventDate = eventDate.AddMinutes(periodsOfTime);
                     // бросаем кубик на проверку бой ли это
                     var isBattle = Dice.Rolling("1d4");
                     if (isBattle == 1)
@@ -131,10 +133,10 @@ namespace ClassLibraryGameDND
                             pet.DEX += statChange;
                             log.Description += $"\nПитомец повысил силу и ловкость на {statChange}";
                         }
-                        else 
+                        else
                         {
                             expedition.FinishTime = eventDate;
-                            expedition.Status = true;
+                            end = true;
                             db.EditExpedition(expedition);
                         }
                     }
@@ -167,7 +169,7 @@ namespace ClassLibraryGameDND
                 }
                 else
                 {
-                    expedition.Status = true;
+                    end = true;
                     expedition.FinishTime = eventDate;
                     if (pet.CurrentPetHP > 0)
                     {
@@ -234,6 +236,18 @@ namespace ClassLibraryGameDND
 
 
             return sbForStartFight.ToString();
+        }
+
+        public string GetReward(int characterId)
+        {
+            Expedition expedition = db.GetExpeditionByCharacterID(characterId);
+            if (expedition == null || expedition.Status)
+                return "no";
+
+            string reward = expedition.Reward;
+            expedition.Status = true;
+            db.EditExpedition(expedition);
+            return reward;
         }
     }
 }
