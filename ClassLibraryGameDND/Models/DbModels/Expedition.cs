@@ -8,6 +8,8 @@
 
         public string Pet { get; set; }
 
+        public string Portrait { get; set; }
+
         public DateTime Time { get; set; }
         public DateTime FinishTime { get; set; }
 

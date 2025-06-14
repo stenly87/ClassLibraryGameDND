@@ -21,6 +21,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
         
         public int WIS { get; set; }
         
-        public int Will { get; set; }      
+        public int Will { get; set; }
+        public string Portrait { get; set; } = "";
     }
 }

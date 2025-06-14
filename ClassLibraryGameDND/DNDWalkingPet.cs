@@ -17,33 +17,35 @@ namespace ClassLibraryGameDND
         public Status GetStatus(int characterId)
         {
             Status status = new Status();
-            StringBuilder sb = new StringBuilder();
             Expedition expedition = db.GetExpeditionByCharacterID(characterId);
             if (expedition != null)
             {
+                status.Name = expedition.Pet;
+                status.Portrait = expedition.Portrait;
                 List<CompleteEvent> events = db.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
                 if (events.Count > 0)
                 {
-                    sb.Append($"Здоровье питомца: {events.Last().CurrentPetHP}\n");
-                    sb.Append("События:\n");
+                    status.HP =  "Здоровье: " + events.Last().CurrentPetHP;
                     status.Reward = expedition.Reward;
+                    int minutes = events.Last().Time.Subtract(expedition.Time).Minutes;
+                    status.TimePass = "Прошло минут: " + minutes;
+                    status.Progress = minutes / 480.0;
                     foreach (CompleteEvent e in events)
                     {
-                        status.Events.Add(e.EventName);
+                        status.Events.Add("Прошло " + e.Time.Subtract(expedition.Time).Minutes + " минут(ы): " + e.EventName);
                         status.LogId.Add(e.LogId);
                     }
                 }
                 else
                 {
-                    sb.Append("Питомец ещё не успел попасть в неприятности");
+                    status.Info = "Питомец ещё не успел попасть в неприятности";
                 }
             }
             else
             {
-                sb.Append("Питомцев на прогулке не обнаружено");
+                status.Info = "Питомцев на прогулке не обнаружено";
             }
 
-            status.Info = sb.ToString();
             return status;
         }
 
@@ -92,6 +94,7 @@ namespace ClassLibraryGameDND
 
             Expedition expedition = new Expedition();
             expedition.PlayerID = pet.Character;
+            expedition.Portrait = pet.Portrait;
             expedition.PetHP = petHp;
             expedition.Pet = pet.Name;
             expedition.Time = currentDate;

@@ -51,7 +51,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
                             Time = dr.GetDateTime("Time"),
                             Status = dr.GetBoolean("Status"),
                             PetHP = dr.GetInt32("PetHP"),
-                            Reward = dr.GetString("Reward")
+                            Reward = dr.GetString("Reward"),
+                            Portrait = dr.GetString("Portrait")
                         };
                         result.Add(item);
                     }
@@ -137,7 +138,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public void AddExpedition(Expedition ex)
         {
-            var request = "insert into `Expeditions` Values (@PlayerID, @Pet, @Time, @Status, 0, @PetHP, @Reward, @FinishTime);";
+            var request = "insert into `Expeditions` Values (@PlayerID, @Pet, @Time, @Status, 0, @PetHP, @Reward, @FinishTime, @Portrait);";
 
             ExecuteRequest(request,
                 new MySqlParameter("PlayerID", ex.PlayerID),
@@ -146,7 +147,8 @@ namespace ClassLibraryGameDND.Models.OtherModels
                 new MySqlParameter("Status", ex.Status),
                 new MySqlParameter("PetHP", ex.PetHP),
                 new MySqlParameter("Reward", ex.Reward),
-                new MySqlParameter("FinishTime", ex.FinishTime)
+                new MySqlParameter("FinishTime", ex.FinishTime),
+                new MySqlParameter("Portrait", ex.Portrait)
             );
 
             ex.Id = (int)(ulong)ExecuteAndReturnValue(new MySqlCommand("select LAST_INSERT_ID()", _con));
@@ -218,7 +220,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
 
         public  int GetExpeditionIdByCharacterID(int id)
         {
-            var find = ExecuteAndReturnValue(new MySqlCommand($"select `ID` from `Expeditions` where `PlayerID` = {id} and ( `Status` = false or `FinishTime` < CURRENT_TIMESTAMP());", _con));
+            var find = ExecuteAndReturnValue(new MySqlCommand($"select `ID` from `Expeditions` where `PlayerID` = {id} and `FinishTime` > CURRENT_TIMESTAMP();", _con));
             if (find != null)
                 return -1;
             return 0;
