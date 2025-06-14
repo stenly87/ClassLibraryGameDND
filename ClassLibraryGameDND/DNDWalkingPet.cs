@@ -27,12 +27,14 @@ namespace ClassLibraryGameDND
                 {
                     status.HP =  "Здоровье: " + events.Last().CurrentPetHP;
                     status.Reward = expedition.Reward;
-                    int minutes = events.Last().Time.Subtract(expedition.Time).Minutes;
+                    int minutes = (int)events.Last().Time.Subtract(expedition.Time).TotalMinutes;
                     status.TimePass = "Прошло минут: " + minutes;
                     status.Progress = minutes / 480.0;
                     foreach (CompleteEvent e in events)
                     {
-                        status.Events.Add("Прошло " + e.Time.Subtract(expedition.Time).Minutes + " минут(ы): " + e.EventName);
+                        if (e.EventName == "battle")
+                            e.EventName = "Питомец ввязался в драку и " + ((events.Last().CurrentPetHP > 0) ? "победил" : "проиграл");
+                        status.Events.Add("Прошло " + (int)e.Time.Subtract(expedition.Time).TotalMinutes + " минут(ы): " + e.EventName);
                         status.LogId.Add(e.LogId);
                     }
                 }
