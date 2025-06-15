@@ -50,7 +50,7 @@ namespace ClassLibraryGameDND
             }
             else
             {
-                status.Info = "Питомцев на прогулке не обнаружено";
+                status.Info = "no";
             }
 
             return status;

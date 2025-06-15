@@ -216,8 +216,13 @@ namespace ClassLibraryGameDND.Models.OtherModels
             return result;
         }
 
-        public  Expedition GetExpeditionByCharacterID(int id)
-            => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Expeditions` where `PlayerID` = {id} Order By `ID` DESC LIMIT 1;", _con), typeof(Expedition)).Cast<Expedition>().Last();
+        public Expedition GetExpeditionByCharacterID(int id)
+        {
+            List<object> result = ExecuteSelectRequestObject(new MySqlCommand($"select * from `Expeditions` where `PlayerID` = {id} Order By `ID` DESC LIMIT 1;", _con), typeof(Expedition));
+            if (result.Count > 0)
+                return result.Last() as Expedition;
+            return null;
+        }
 
         public  int GetExpeditionIdByCharacterID(int id)
         {
