@@ -190,7 +190,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
         }
 
         public List<CompleteEvent> GetCompletedEventsFromCrossByExpeditionID(int id)
-            => ExecuteSelectRequestForCompleteEvent(new MySqlCommand($"SELECT  e.EventName, eec.Time, eec.CurrentPetHP, eec.LogID FROM  EventExpeditionCross eec JOIN Events e ON eec.EventID = e.ID  WHERE eec.ExpeditionID = {id} and eec.Time < CURRENT_TIMESTAMP()  ORDER BY eec.Time;", _con));
+            => ExecuteSelectRequestForCompleteEvent(new MySqlCommand($"SELECT e.ID, e.EventName, eec.Time, eec.CurrentPetHP, eec.LogID FROM  EventExpeditionCross eec JOIN Events e ON eec.EventID = e.ID  WHERE eec.ExpeditionID = {id} and eec.Time < CURRENT_TIMESTAMP()  ORDER BY eec.Time;", _con));
 
         private List<CompleteEvent> ExecuteSelectRequestForCompleteEvent(MySqlCommand mySqlCommand)
         {
@@ -204,6 +204,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
             {
                 var item = new CompleteEvent
                 {
+                    ID = dr.GetInt32("ID"),
                     CurrentPetHP = dr.GetInt32("CurrentPetHP"),
                     EventName = dr.GetString("EventName"),
                     LogId = dr.GetInt32("LogID"),
@@ -252,7 +253,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
              => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Monsters` where `IsBoss` = 1 order by rand() limit 1;", _con), typeof(Monster)).Select(s => (Monster)s).ToList().First();
 
         internal  Event GetRandomEvent()
-             => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events` where `ID`>1 order by rand() limit 1;", _con), typeof(Event)).Select(s => (Event)s).ToList().First();
+             => ExecuteSelectRequestObject(new MySqlCommand($"select * from `Events` where `ID` > 2 order by rand() limit 1;", _con), typeof(Event)).Select(s => (Event)s).ToList().First();
 
         internal  DateTime GetCurrentTime()
         {

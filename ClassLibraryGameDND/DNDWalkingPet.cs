@@ -28,11 +28,11 @@ namespace ClassLibraryGameDND
                     int hp = events.Last().CurrentPetHP;
                     status.HP = "Здоровье: " + hp;
                     status.Reward = expedition.Reward;
-                    int minutes = (int)events.Last().Time.Subtract(expedition.Time).TotalMinutes;
+                    double minutes = events.Last().Time.Subtract(expedition.Time).TotalMinutes;
                     status.TimePass = "Прошло минут: " + minutes;
-                    if (minutes > 480)
-                        minutes = 480;
-                    if (hp <= 0 || events.Last().Time == expedition.Time)
+                    if (minutes >= 480)
+                        minutes = 479.9999;
+                    if (hp <= 0 || events.Last().ID == 2)
                         status.End = true;
                     status.Progress = minutes / 480.0;
                     foreach (CompleteEvent e in events)
@@ -178,7 +178,7 @@ namespace ClassLibraryGameDND
                     expedition.FinishTime = eventDate;
                     if (pet.CurrentPetHP > 0)
                     {
-                        ev = new Event { Id = 1 };
+                        ev = new Event { Id = 2 };
                         log.Description = "Сражение с боссом\n\n";
                         var boss = db.GetRandomMonsterBoss() as Monster;
                         boss.CurrentPetHP = boss.MaxHP;
