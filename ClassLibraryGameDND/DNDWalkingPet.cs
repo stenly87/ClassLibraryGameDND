@@ -25,15 +25,20 @@ namespace ClassLibraryGameDND
                 List<CompleteEvent> events = db.GetCompletedEventsFromCrossByExpeditionID(expedition.Id);
                 if (events.Count > 0)
                 {
-                    status.HP = "Здоровье: " + events.Last().CurrentPetHP;
+                    int hp = events.Last().CurrentPetHP;
+                    status.HP = "Здоровье: " + hp;
                     status.Reward = expedition.Reward;
                     int minutes = (int)events.Last().Time.Subtract(expedition.Time).TotalMinutes;
                     status.TimePass = "Прошло минут: " + minutes;
+                    if (minutes > 480)
+                        minutes = 480;
+                    if (hp <= 0 || events.Last().Time == expedition.Time)
+                        status.End = true;
                     status.Progress = minutes / 480.0;
                     foreach (CompleteEvent e in events)
                     {
                         if (e.EventName == "battle")
-                            e.EventName = "Питомец ввязался в драку и " + ((events.Last().CurrentPetHP > 0) ? "победил" : "проиграл");
+                            e.EventName = "Питомец ввязался в драку и " + ((hp > 0) ? "победил" : "проиграл");
                         status.Events.Add("Прошло " + (int)e.Time.Subtract(expedition.Time).TotalMinutes + " минут(ы): " + e.EventName);
                         status.LogId.Add(e.LogId);
                     }

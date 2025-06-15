@@ -15,6 +15,7 @@ namespace ClassLibraryGameDND.Models.OtherModels
         public string Reward { get; set; }
         public string TimePass { get; set; }
         public double Progress { get; set; }
+        public bool End { get; set; } = false;
         public List<string> Events { get; set; } = new List<string>();
         public List<int> LogId { get; set; } = new List<int>();
     }
