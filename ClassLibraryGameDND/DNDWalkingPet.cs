@@ -118,89 +118,98 @@ namespace ClassLibraryGameDND
                 Event ev = null;
 
                 var periodsOfTime = rnd.Next(30, 61);
-                eventDate = eventDate.AddMinutes(periodsOfTime);
+                
 
-                if (pet.CurrentPetHP > 0 && eventDate < currentDate.AddHours(8))
+                try
                 {
-                    // бросаем кубик на проверку бой ли это
-                    var isBattle = Dice.Rolling("1d4");
-                    if (isBattle == 1)
+                    if (pet.CurrentPetHP > 0 && eventDate < currentDate.AddHours(8))
                     {
-                        ev = new Event { Id = 1 };
-                        var mon = db.GetRandomMonsterNotBoss() as Monster;
-                        mon.CurrentPetHP = mon.MaxHP;
-                        log.Description += StartFight(pet, mon, new StringBuilder());
-
-                        if (pet.CurrentPetHP > 0)
+                        // бросаем кубик на проверку бой ли это
+                        var isBattle = Dice.Rolling("1d4");
+                        if (isBattle == 1)
                         {
-                            int statChange = Dice.Rolling("1d4"); ;
-                            pet.STR += statChange;
-                            pet.DEX += statChange;
-                            log.Description += $"\nПитомец повысил силу и ловкость на {statChange}";
+                            ev = new Event { Id = 1 };
+                            var mon = db.GetRandomMonsterNotBoss() as Monster;
+                            mon.CurrentPetHP = mon.MaxHP;
+                            log.Description += StartFight(pet, mon, new StringBuilder());
+
+                            if (pet.CurrentPetHP > 0)
+                            {
+                                int statChange = Dice.Rolling("1d4"); ;
+                                pet.STR += statChange;
+                                pet.DEX += statChange;
+                                log.Description += $"\nПитомец повысил силу и ловкость на {statChange}";
+                            }
+                            else
+                            {
+                                expedition.FinishTime = eventDate;
+                                end = true;
+                                db.EditExpedition(expedition);
+                            }
                         }
                         else
                         {
-                            expedition.FinishTime = eventDate;
-                            end = true;
-                            db.EditExpedition(expedition);
+                            ev = db.GetRandomEvent() as Event;
+                            var stat = ev.Stat;
+                            var rollDice = Dice.Rolling("1d20");
+                            bool autofail = rollDice == 1;
+                            var changStat = ev.ChangeableStat;
+                            var propStatData = pet.GetType().GetProperty(stat);
+                            var petStatValue = (int)propStatData.GetValue(pet);
+                            log.Description = $"{ev.EventName}: ";
+                            int change = 0;
+                            if (autofail || (petStatValue < rollDice))
+                            {
+                                log.Description += ev.NegEffect;
+                                change = ev.NegStatChange;
+                            }
+                            else
+                            {
+                                log.Description += ev.PosEffect;
+                                change = ev.PosStatChange;
+                            }
+                            var propData = pet.GetType().GetProperty(changStat);
+                            var petStat = (int)propData.GetValue(pet);
+                            petStat += change;
+                            propData.SetValue(pet, petStat);
                         }
                     }
                     else
                     {
-                        ev = db.GetRandomEvent() as Event;
-                        var stat = ev.Stat;
-                        var rollDice = Dice.Rolling("1d20");
-                        bool autofail = rollDice == 1;
-                        var changStat = ev.ChangeableStat;
-                        var propStatData = pet.GetType().GetProperty(stat);
-                        var petStatValue = (int)propStatData.GetValue(pet);
-                        log.Description = $"{ev.EventName}: ";
-                        int change = 0;
-                        if (autofail || (petStatValue < rollDice))
-                        {
-                            log.Description += ev.NegEffect;
-                            change = ev.NegStatChange;
-                        }
-                        else
-                        {
-                            log.Description += ev.PosEffect;
-                            change = ev.PosStatChange;
-                        }
-                        var propData = pet.GetType().GetProperty(changStat);
-                        var petStat = (int)propData.GetValue(pet);
-                        petStat += change;
-                        propData.SetValue(pet, petStat);
-                    }
-                }
-                else
-                {
-                    end = true;
-                    expedition.FinishTime = eventDate;
-                    if (pet.CurrentPetHP > 0)
-                    {
-                        ev = new Event { Id = 2 };
-                        log.Description = "Сражение с боссом\n\n";
-                        var boss = db.GetRandomMonsterBoss() as Monster;
-                        boss.CurrentPetHP = boss.MaxHP;
-                        log.Description += StartFight(pet, boss, new StringBuilder());
+                        end = true;
+                        expedition.FinishTime = eventDate;
                         if (pet.CurrentPetHP > 0)
                         {
-                            //генерится награда
-                            expedition.Reward = GetRandomReward();
+                            ev = new Event { Id = 2 };
+                            log.Description = "Сражение с боссом\n\n";
+                            var boss = db.GetRandomMonsterBoss() as Monster;
+                            boss.CurrentPetHP = boss.MaxHP;
+                            log.Description += StartFight(pet, boss, new StringBuilder());
+                            if (pet.CurrentPetHP > 0)
+                            {
+                                //генерится награда
+                                expedition.Reward = GetRandomReward();
+                            }
                         }
+                        db.EditExpedition(expedition);
                     }
-                    db.EditExpedition(expedition);
+                    if (ev != null)
+                    {
+                        EventExpeditionCross eventExpeditionCross = new EventExpeditionCross();
+                        eventExpeditionCross.Event = ev;
+                        eventExpeditionCross.Expedition = expedition;
+                        eventExpeditionCross.Log = log;
+                        eventExpeditionCross.Time = eventDate;
+                        eventExpeditionCross.CurrentPetHP = pet.CurrentPetHP;
+                        db.AddLog(log);
+                        db.AddEventExpeditionCross(eventExpeditionCross);
+                    }
+
+                    eventDate = eventDate.AddMinutes(periodsOfTime);
                 }
-                if (ev != null)
+                catch (Exception ex)
                 {
-                    EventExpeditionCross eventExpeditionCross = new EventExpeditionCross();
-                    eventExpeditionCross.Event = ev;
-                    eventExpeditionCross.Expedition = expedition;
-                    eventExpeditionCross.Log = log;
-                    eventExpeditionCross.Time = eventDate;
-                    eventExpeditionCross.CurrentPetHP = pet.CurrentPetHP;
-                    db.AddLog(log);
-                    db.AddEventExpeditionCross(eventExpeditionCross);
+                    File.AppendAllText("petwalk_error.txt", ex.Message + "\n");
                 }
             }
         }
